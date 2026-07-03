@@ -52,3 +52,5 @@ infra/supabase/**/*.env
 
 # Fumadocs MDX generated source
 .source/
+
+.vercel
