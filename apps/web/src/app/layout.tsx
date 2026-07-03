@@ -48,9 +48,9 @@ export const metadata: Metadata = {
   },
   description: siteMetadata.description,
   keywords: siteMetadata.keywords,
-  authors: [{ name: 'Kortix Team', url: 'https://www.kortix.com' }],
-  creator: 'Kortix Team',
-  publisher: 'Kortix Team',
+  authors: [{ name: 'Humble Team', url: 'https://github.com/yethikrishna/humble' }],
+  creator: 'Humble Team',
+  publisher: 'Humble Team',
   applicationName: siteMetadata.name,
   robots: {
     index: true,
@@ -83,8 +83,8 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: siteMetadata.title,
     description: siteMetadata.description,
-    creator: '@kortix',
-    site: '@kortix',
+    creator: '@humble',
+    site: '@humble',
     images: ['/banner.png'],
   },
   icons: {
@@ -191,21 +191,21 @@ export default async function RootLayout({
         />
 
         {/* Static SEO meta tags - rendered in initial HTML */}
-        <title>Kortix – The Autonomous Company Operating System</title>
+        <title>Humble – The Autonomous Company Operating System</title>
         <meta name="description" content="A cloud computer where AI agents run your company. Connect 3,000+ tools, configure autonomous agents, set triggers — and the machine operates 24/7 with persistent memory." />
-        <meta name="keywords" content="Kortix, autonomous company operating system, AI agents, self-driving company, cloud computer, AI automation, agent orchestration, autowork, AI triggers, persistent memory, autonomous workforce, AI operations" />
-        <meta property="og:title" content="Kortix – The Autonomous Company Operating System" />
+        <meta name="keywords" content="Humble, y0, autonomous company operating system, AI agents, self-driving company, cloud computer, AI automation, agent orchestration, autowork, AI triggers, persistent memory, autonomous workforce, AI operations" />
+        <meta property="og:title" content="Humble – The Autonomous Company Operating System" />
         <meta property="og:description" content="A cloud computer where AI agents run your company. Connect 3,000+ tools, configure autonomous agents, set triggers — and the machine operates 24/7 with persistent memory." />
-        <meta property="og:image" content="https://kortix.com/banner.png" />
-        <meta property="og:url" content="https://kortix.com" />
+        <meta property="og:image" content="/banner.png" />
+        <meta property="og:url" content="https://humble.yethikrishnar.pw" />
         <meta property="og:type" content="website" />
-        <meta property="og:site_name" content="Kortix" />
+        <meta property="og:site_name" content="Humble" />
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="Kortix – The Autonomous Company Operating System" />
+        <meta name="twitter:title" content="Humble – The Autonomous Company Operating System" />
         <meta name="twitter:description" content="A cloud computer where AI agents run your company. Connect 3,000+ tools, configure autonomous agents, set triggers — and the machine operates 24/7 with persistent memory." />
-        <meta name="twitter:image" content="https://kortix.com/banner.png" />
-        <meta name="twitter:site" content="@kortix" />
-        <link rel="canonical" href="https://kortix.com" />
+        <meta name="twitter:image" content="/banner.png" />
+        <meta name="twitter:site" content="@humble" />
+        <link rel="canonical" href="https://humble.yethikrishnar.pw" />
 
         {/* iOS Smart App Banner - shows native install banner in Safari */}
         {!featureFlags.disableMobileAdvertising ? (
@@ -221,15 +221,15 @@ export default async function RootLayout({
               '@context': 'https://schema.org',
               '@type': 'Organization',
               name: siteMetadata.name,
-              alternateName: ['Kortix', 'Kortix AI', 'Kortix – The Autonomous Company Operating System'],
+              alternateName: ['Humble', 'Humble AI', 'Humble – The Autonomous Company Operating System'],
               url: siteMetadata.url,
               logo: `${siteMetadata.url}/favicon.png`,
               description: siteMetadata.description,
               foundingDate: '2024',
               sameAs: [
-                'https://github.com/kortix-ai/suna',
-                'https://x.com/kortix',
-                'https://linkedin.com/company/kortix',
+                'https://github.com/yethikrishna/humble',
+                'https://x.com/humble',
+                'https://linkedin.com/company/humble',
               ],
               contactPoint: {
                 '@type': 'ContactPoint',
@@ -247,7 +247,7 @@ export default async function RootLayout({
               '@context': 'https://schema.org',
               '@type': 'SoftwareApplication',
               name: siteMetadata.title,
-              alternateName: [siteMetadata.name, 'Kortix'],
+              alternateName: [siteMetadata.name, 'Humble'],
               applicationCategory: 'BusinessApplication',
               operatingSystem: 'Web, macOS, Windows, Linux',
               description: siteMetadata.description,

@@ -116,7 +116,7 @@ export default function Variant2Home() {
                 className="h-14 px-10 text-base rounded-full transition-colors"
                 onClick={handleLaunch}
               >
-                Launch Kortix<ArrowRight className="ml-2 size-4" />
+                Launch Humble<ArrowRight className="ml-2 size-4" />
               </Button>
 
               <div className="flex flex-col items-center gap-3 w-full">
@@ -267,7 +267,7 @@ export default function Variant2Home() {
                       </div>
                     </div>
                     <div className="space-y-2 pl-3 border-l border-border/25">
-                      <div className="text-muted-foreground text-[0.5625rem] uppercase tracking-widest mb-3">Kortix</div>
+                      <div className="text-muted-foreground text-[0.5625rem] uppercase tracking-widest mb-3">Humble</div>
                       {[
                         { done: true, text: 'Browsing competitor sites via Chromium...' },
                         { done: true, text: 'Extracting pricing pages (3 sites)...' },
