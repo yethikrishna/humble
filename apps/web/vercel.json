@@ -1,11 +1,8 @@
 {
-  "buildCommand": "next build",
-  "rewrites": [
-    {
-      "source": "/api/:path*",
-      "destination": "/api/:path*"
-    }
-  ],
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": "nextjs",
+  "installCommand": "pnpm install --filter Kortix-Computer-Frontend... --frozen-lockfile --config.dedupe-peer-dependents=false",
+  "buildCommand": "pnpm run build",
   "git": {
     "deploymentEnabled": {
       "main": true,

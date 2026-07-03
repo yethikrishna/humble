@@ -46,7 +46,7 @@ function PlayIcon({ className }: { className?: string }) {
 }
 
 // macOS-style power button
-function PowerButton({ href, onClick, label = 'Launch Kortix' }: { href?: string; onClick?: () => void; label?: string }) {
+function PowerButton({ href, onClick, label = 'Launch Humble' }: { href?: string; onClick?: () => void; label?: string }) {
   const [hovered, setHovered] = useState(false);
 
   const inner = (
@@ -221,10 +221,10 @@ export function Navbar({ isAbsolute = false }: NavbarProps) {
               </ContextMenuSubTrigger>
               <ContextMenuSubContent className="w-40">
                 {[
-                  { label: 'Black · SVG', href: '/brandkit/Logo/Brandmark/SVG/Brandmark Black.svg', file: 'kortix-symbol-black.svg' },
-                  { label: 'Black · PNG', href: '/brandkit/Logo/Brandmark/PNG/Brandmark Black.png', file: 'kortix-symbol-black.png' },
-                  { label: 'White · SVG', href: '/brandkit/Logo/Brandmark/SVG/Brandmark White.svg', file: 'kortix-symbol-white.svg' },
-                  { label: 'White · PNG', href: '/brandkit/Logo/Brandmark/PNG/Brandmark White.png', file: 'kortix-symbol-white.png' },
+                  { label: 'Black · SVG', href: '/brandkit/Logo/Brandmark/SVG/Brandmark Black.svg', file: 'humble-symbol-black.svg' },
+                  { label: 'Black · PNG', href: '/brandkit/Logo/Brandmark/PNG/Brandmark Black.png', file: 'humble-symbol-black.png' },
+                  { label: 'White · SVG', href: '/brandkit/Logo/Brandmark/SVG/Brandmark White.svg', file: 'humble-symbol-white.svg' },
+                  { label: 'White · PNG', href: '/brandkit/Logo/Brandmark/PNG/Brandmark White.png', file: 'humble-symbol-white.png' },
                 ].map((d) => (
                   <ContextMenuItem key={d.file} onClick={() => { const a = document.createElement('a'); a.href = d.href; a.download = d.file; a.click(); }} className="text-[13px] cursor-pointer">
                     {d.label}
@@ -239,10 +239,10 @@ export function Navbar({ isAbsolute = false }: NavbarProps) {
               </ContextMenuSubTrigger>
               <ContextMenuSubContent className="w-40">
                 {[
-                  { label: 'Black · SVG', href: '/brandkit/Logo/Wordmark/SVG/Wordmark Black.svg', file: 'kortix-wordmark-black.svg' },
-                  { label: 'Black · PNG', href: '/brandkit/Logo/Wordmark/PNG/Wordmark Black.png', file: 'kortix-wordmark-black.png' },
-                  { label: 'White · SVG', href: '/brandkit/Logo/Wordmark/SVG/Wordmark White.svg', file: 'kortix-wordmark-white.svg' },
-                  { label: 'White · PNG', href: '/brandkit/Logo/Wordmark/PNG/Wordmark White.png', file: 'kortix-wordmark-white.png' },
+                  { label: 'Black · SVG', href: '/brandkit/Logo/Wordmark/SVG/Wordmark Black.svg', file: 'humble-wordmark-black.svg' },
+                  { label: 'Black · PNG', href: '/brandkit/Logo/Wordmark/PNG/Wordmark Black.png', file: 'humble-wordmark-black.png' },
+                  { label: 'White · SVG', href: '/brandkit/Logo/Wordmark/SVG/Wordmark White.svg', file: 'humble-wordmark-white.svg' },
+                  { label: 'White · PNG', href: '/brandkit/Logo/Wordmark/PNG/Wordmark White.png', file: 'humble-wordmark-white.png' },
                 ].map((d) => (
                   <ContextMenuItem key={d.file} onClick={() => { const a = document.createElement('a'); a.href = d.href; a.download = d.file; a.click(); }} className="text-[13px] cursor-pointer">
                     {d.label}
@@ -304,7 +304,7 @@ export function Navbar({ isAbsolute = false }: NavbarProps) {
               onClick={() => { trackCtaSignup(); router.push(ctaLink); }}
               variant="ghost"
               size="icon"
-              aria-label="Launch Kortix"
+              aria-label="Launch Humble"
               className="opacity-80 hover:opacity-100"
             >
               <svg viewBox="0 0 24 24" className="size-[20px]" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round">

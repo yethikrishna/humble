@@ -910,7 +910,7 @@ function SelfHostedLoginContent() {
               transition={{ duration: 0.7, delay: 0.35, ease: [0.16, 1, 0.3, 1] }}
             >
               <div className="flex flex-col items-center gap-1.5">
-                <p className="text-foreground/50 text-sm font-medium tracking-wide">Kortix</p>
+                <p className="text-foreground/50 text-sm font-medium tracking-wide">Humble</p>
                 <p className="text-foreground/25 text-xs tracking-widest uppercase">Click or press Enter to sign in</p>
               </div>
               <motion.div
