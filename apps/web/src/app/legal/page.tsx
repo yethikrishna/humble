@@ -98,23 +98,8 @@ function LegalContent() {
                       </h3>
                       <div className="text-muted-foreground mb-6 space-y-2">
                         <p>
-                          <strong>Kortix AI Corp</strong>
+                          <strong>Humble</strong> is operated by Yethikrishna R.
                         </p>
-                        <p>Incorporated in Delaware, United States</p>
-                        <p className="mt-4">
-                          <strong>Principal Place of Business:</strong>
-                        </p>
-                        <p>701 Tillery Street</p>
-                        <p>Unit 12-2521</p>
-                        <p>Austin, TX 78702</p>
-                        <p>United States</p>
-                        <p className="mt-4">
-                          <strong>Registered Agent:</strong>
-                        </p>
-                        <p>Firstbase Agent LLC</p>
-                        <p>1007 N Orange St. 4th Floor Suite #1382</p>
-                        <p>Wilmington, DE 19801</p>
-                        <p>United States</p>
                       </div>
 
                       <h3 className="text-lg font-medium tracking-tight">
@@ -136,7 +121,7 @@ function LegalContent() {
                         Responsible for Content
                       </h3>
                       <p className="text-muted-foreground mb-6">
-                        Kortix AI Corp is responsible for the content of this
+                        Yethikrishna R is responsible for the content of this
                         website in accordance with applicable laws.
                       </p>
 
@@ -172,12 +157,10 @@ function LegalContent() {
                       <p className="text-muted-foreground text-balance mb-6">
                         PLEASE READ THESE TERMS OF USE ("AGREEMENT" OR "TERMS OF
                         USE" or "TERMS OF SERVICE" or "TERMS AND CONDITIONS")
-                        CAREFULLY BEFORE USING THE SERVICES OFFERED BY Kortix AI
-                        Corp, a Delaware corporation with its principal place of business
-                        at 701 Tillery Street Unit 12-2521, Austin, Texas 78702, United States
-                        ("Company"). THIS AGREEMENT SETS FORTH THE LEGALLY
-                        BINDING TERMS AND CONDITIONS FOR YOUR USE OF THE Kortix
-                        WEBSITE AND ALL RELATED SERVICES.
+                        CAREFULLY BEFORE USING THE SERVICES OFFERED BY Humble,
+                        operated by Yethikrishna R ("Company"). THIS AGREEMENT
+                        SETS FORTH THE LEGALLY BINDING TERMS AND CONDITIONS FOR
+                        YOUR USE OF THE Humble WEBSITE AND ALL RELATED SERVICES.
                       </p>
 
                       <h3 className="text-lg font-medium tracking-tight">
@@ -185,17 +168,15 @@ function LegalContent() {
                       </h3>
                       <ul className="text-muted-foreground space-y-1 mb-6">
                         <li>
-                          "Company" refers to Kortix AI Corp, a Delaware corporation
-                          with its principal place of business at 701 Tillery Street
-                          Unit 12-2521, Austin, Texas 78702, United States.
+                          "Company" refers to the operator of Humble, Yethikrishna R.
                         </li>
                         <li>
-                          "Site" refers to the Kortix website, including any related
+                          "Site" refers to the Humble website, including any related
                           features, content, or applications offered from time to
                           time by the Company.
                         </li>
                         <li>
-                          "Service" refers to the Kortix platform and all related
+                          "Service" refers to the Humble platform and all related
                           services provided by the Company, including the platform
                           for building, managing, and training autonomous AI agents,
                           browser automation, file management, web intelligence,
@@ -321,7 +302,7 @@ function LegalContent() {
                         Description of Service
                       </h3>
                       <p className="text-muted-foreground text-balance mb-4">
-                        Kortix is a complete platform for creating, managing, and
+                        Humble is a complete platform for creating, managing, and
                         training autonomous AI agents. The Service enables Users to
                         build sophisticated AI agents that can work autonomously
                         on their behalf. The platform provides:
@@ -1095,16 +1076,16 @@ function LegalContent() {
                         Choice of Law
                       </h3>
                       <p className="text-muted-foreground text-balance mb-6">
-                        Any and all Claims shall be governed by the Federal
-                        Arbitration Act and the internal substantive laws of the
-                        State of Delaware, United States, in all respects, without
-                        regard for the jurisdiction or forum in which the user is
-                        domiciled, resides, or is located at the time of such access
-                        or use. Except as provided in the Arbitration Agreement, all
-                        Claims will be brought in the federal or state courts located
-                        in Delaware, and you and the Company each unconditionally,
-                        voluntarily, and irrevocably consent to the exclusive personal
-                        jurisdiction and venue of those courts.
+                        [PLACEHOLDER — governing law and venue to be specified by
+                        the Company based on its actual jurisdiction. Any and all
+                        Claims shall be governed by the laws of that jurisdiction,
+                        without regard for the jurisdiction or forum in which the
+                        user is domiciled, resides, or is located at the time of
+                        such access or use. Except as provided in the Arbitration
+                        Agreement, all Claims will be brought in the courts of that
+                        jurisdiction, and you and the Company each unconditionally,
+                        voluntarily, and irrevocably consent to the exclusive
+                        personal jurisdiction and venue of those courts.]
                       </p>
 
                       <h3 className="text-lg font-medium tracking-tight">
@@ -1241,8 +1222,8 @@ function LegalContent() {
                       <p className="text-muted-foreground text-balance mb-6">
                         The Service software is available for self-hosting on your own
                         infrastructure, subject to the terms of the LICENSE file in our
-                        GitHub repository. Self-hosting is governed by the Kortix Public
-                        Source License (KPSL), which includes restrictions on
+                        GitHub repository. Self-hosting is governed by the Elastic
+                        License 2.0, which includes restrictions on
                         network-accessible deployments and commercial use. For
                         network-accessible deployments or commercial use beyond the
                         LICENSE terms, a separate commercial license agreement is
@@ -1292,7 +1273,7 @@ function LegalContent() {
                         Trademarks and Patents
                       </h3>
                       <p className="text-muted-foreground text-balance mb-6">
-                        All Kortix logos, marks, and designations are trademarks or
+                        All Humble logos, marks, and designations are trademarks or
                         registered trademarks of the Company. All other trademarks
                         mentioned on this website are the property of their
                         respective owners. The trademarks and logos displayed on
@@ -1447,14 +1428,14 @@ function LegalContent() {
                       <p className="text-muted-foreground text-balance mb-6">
                         ALL USE OF THE SERVICE AND ANY CONTENT IS UNDERTAKEN
                         ENTIRELY AT YOUR OWN RISK. THE SERVICE (INCLUDING, WITHOUT
-                        LIMITATION, THE Kortix WEB APP AND ANY CONTENT) IS PROVIDED
+                        LIMITATION, THE Humble WEB APP AND ANY CONTENT) IS PROVIDED
                         "AS IS" AND "AS AVAILABLE" AND IS WITHOUT WARRANTY OF ANY
                         KIND, EXPRESS OR IMPLIED, INCLUDING, BUT NOT LIMITED TO,
                         THE IMPLIED WARRANTIES OF TITLE, NON-INFRINGEMENT,
                         MERCHANTABILITY, AND FITNESS FOR A PARTICULAR PURPOSE, AND
                         ANY WARRANTIES IMPLIED BY ANY COURSE OF PERFORMANCE OR
                         USAGE OF TRADE, ALL OF WHICH ARE EXPRESSLY DISCLAIMED.
-                        Kortix DOES NOT GUARANTEE THE ACCURACY, COMPLETENESS, OR
+                        Humble DOES NOT GUARANTEE THE ACCURACY, COMPLETENESS, OR
                         RELIABILITY OF THE AI-GENERATED CONTENT, AND USERS ASSUME
                         FULL RESPONSIBILITY FOR ANY APPLICATIONS CREATED USING THE
                         SERVICE. SOME STATES DO NOT ALLOW LIMITATIONS ON HOW LONG
@@ -1520,10 +1501,6 @@ function LegalContent() {
                         {' '}with the subject line "Privacy Request" and include details
                         of your request.
                       </p>
-                      <p className="text-muted-foreground text-balance mb-6">
-                        <strong>Mailing Address:</strong> Kortix AI Corp, 701 Tillery
-                        Street Unit 12-2521, Austin, Texas 78702, United States.
-                      </p>
                     </div>
                   ) : (
                     <div>
@@ -1548,7 +1525,7 @@ function LegalContent() {
                       </p>
 
                       <p className="text-muted-foreground text-balance mb-6">
-                        References to our "Services" at Kortix in this statement
+                        References to our "Services" at Humble in this statement
                         include our website, apps, and other products and
                         services. This statement applies to our Services that
                         display or reference this Privacy Statement. Third-party
@@ -1557,7 +1534,7 @@ function LegalContent() {
                       </p>
 
                       <p className="text-muted-foreground text-balance mb-6">
-                        Kortix does not collect biometric or identifying
+                        Humble does not collect biometric or identifying
                         information. All data is processed securely and any data
                         is deleted upon account removal.
                       </p>
