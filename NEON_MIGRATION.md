@@ -25,21 +25,67 @@ The credit-system SQL functions it calls (`atomic_use_credits`,
 extensions): **none found**. They're portable to any Postgres, Neon
 included, unmodified.
 
-**To migrate the database:**
-1. Create a Neon project (free tier) — via the Neon dashboard, or from this
-   repo's Vercel project: `vercel install neon`.
-2. Apply the schema: run the SQL files in `supabase/migrations/` against
-   the Neon connection string, in filename order (they're already
-   numbered).
-3. Set `DATABASE_URL` on `kortix-api` to the Neon connection string.
+**To migrate the database (I can't run this myself — see "why" below — so
+these are exact commands for you to run):**
 
-No application code changes required for this part.
+1. Create a Neon project (free tier) — via the Neon dashboard, or
+   `vercel install neon` from this repo's Vercel project.
+
+2. **One thing the migrations need that a fresh Neon database doesn't have
+   by default**: `supabase/migrations/00000000000000_bootstrap.sql`,
+   `00000000000001_table_grants.sql`, `00000000000010_access_control.sql`,
+   `00000000000013_platform_user_roles.sql`, and
+   `00000000000018_channel_tables.sql` grant privileges to three
+   Supabase-convention Postgres roles (`service_role`, `authenticated`,
+   `anon`) that Supabase auto-creates in every project for PostgREST's
+   per-request role-switching. `kortix-api` doesn't use that mechanism (it
+   connects as a single Postgres user via `drizzle-orm`/`postgres.js`), so
+   these roles aren't functionally needed — but the `GRANT` statements will
+   fail with `role "service_role" does not exist` on a vanilla Neon database
+   unless the roles exist first. Create them (no login, just grant targets)
+   before applying anything else:
+
+   ```sql
+   CREATE ROLE service_role NOLOGIN;
+   CREATE ROLE authenticated NOLOGIN;
+   CREATE ROLE anon NOLOGIN;
+   ```
+
+3. Apply the 24 migration files in `supabase/migrations/` **in filename
+   order** (they're numbered, so a simple sorted glob is correct):
+
+   ```bash
+   for f in supabase/migrations/*.sql; do
+     echo "Applying $f..."
+     psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f "$f" || { echo "FAILED at $f"; break; }
+   done
+   ```
+
+   Use your Neon connection string (the pooled one, with `?sslmode=require`)
+   as `DATABASE_URL` for this.
+
+4. Set `DATABASE_URL` in `apps/api`'s environment (Vercel project settings,
+   or your backend host's env) to the same Neon connection string.
+
+No application code changes are needed for this part — `kortix-api` already
+reads a plain `DATABASE_URL`.
+
+### Why I can't run this myself
+
+I tried, from this sandboxed session: a direct `psql` connection to Neon's
+Postgres port hung until timeout (this environment only allows outbound
+HTTP(S) to an allowlisted set of hosts — raw Postgres wire protocol on port
+5432 isn't one of them), and Neon's HTTP-based serverless driver
+(`@neondatabase/serverless`) returned `403: Host not in allowlist` for
+Neon's own API domain. Both the database and Stack Auth's servers are
+unreachable from here by any method — which is also why the auth migration
+below needs your testing, not mine.
 
 ## Auth: the part that isn't "just Neon"
 
-`kortix-api` still hard-requires `SUPABASE_URL` and
-`SUPABASE_SERVICE_ROLE_KEY` (`src/config.ts` line 68-72 — both
-`z.string().min(1, '... is required')`, not optional). It uses them for:
+`kortix-api` hard-requires `SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY`
+(`src/config.ts` line 68-72 — both `z.string().min(1, '... is required')`,
+not optional). It uses them for:
 - Verifying user JWTs locally via JWKS (`src/shared/jwt-verify.ts`) — falls
   back to a live `supabase.auth.getUser()` call if JWKS lookup misses.
 - A Supabase client for the same purpose plus a couple of RPC calls
@@ -48,59 +94,43 @@ No application code changes required for this part.
 The frontend (`apps/web`) also talks to Supabase Auth directly for
 login/session (`@supabase/ssr`, `createServerClient` in `middleware.ts`).
 
-This is the real dependency: not the database, but Supabase's **GoTrue**
-auth service (signup, login, magic links, JWT issuance). Two ways to remove
-it, in order of how much code changes:
+This is the real dependency: not the database, but Supabase's auth service
+(signup, login, magic links, JWT issuance).
 
-### Option A (recommended): self-host GoTrue against Neon
+### Status: using Neon Auth (Stack Auth) instead of self-hosting GoTrue
 
-Supabase's auth server, **GoTrue**, is open source
-(`supabase/gotrue` Docker image) and speaks the exact same JWT/JWKS format
-this codebase already expects. Point it at your Neon database instead of a
-Supabase-hosted one, and set `SUPABASE_URL` to your self-hosted GoTrue
-endpoint. **Zero changes to `kortix-api` or `apps/web`** — they already
-speak this protocol.
+The account this project uses already has **Neon Auth** provisioned (built
+on Stack Auth) rather than the self-hosted-GoTrue path this document
+originally recommended as lowest-risk. Installing the real
+`@stackframe/stack` SDK and reading its actual type definitions (not just
+docs/search) confirmed something material: **its sign-in/sign-up/magic-link
+methods only exist on the client-side app** (`useStackApp()`, called from
+the browser) — `StackServerApp` (the secret-key-backed server API) only
+does admin operations (list/create users, teams), not driving a login flow.
 
-```bash
-docker run -d --name gotrue \
-  -e GOTRUE_DB_DRIVER=postgres \
-  -e GOTRUE_DB_DATABASE_URL="<your Neon connection string>" \
-  -e GOTRUE_SITE_URL="https://humble.yethikrishnar.pw" \
-  -e GOTRUE_JWT_SECRET="<generate a long random secret>" \
-  -e GOTRUE_JWT_EXP=3600 \
-  -e GOTRUE_MAILER_AUTOCONFIRM=false \
-  -e API_EXTERNAL_URL="https://auth.yourdomain.com" \
-  -p 9999:9999 \
-  supabase/gotrue:latest
-```
+That means migrating isn't a drop-in swap like self-hosted GoTrue would
+have been — it's a real restructuring of `apps/web/src/app/auth/actions.ts`
+(13 Next.js Server Actions: password login/signup, magic link, OTP code,
+password reset, Google OAuth, self-hosted installer, sign out) from
+server-side calls to client-side `useStackApp()` calls, plus rewriting
+`kortix-api`'s JWT verification to point at Stack Auth's JWKS endpoint
+instead of Supabase's, and replacing the two Supabase RPC calls
+(`atomic_use_credits`, `atomic_add_credits`) with direct calls through
+`kortix-api`'s existing `drizzle`/`postgres` connection (those functions
+are plain Postgres functions, unrelated to auth — see the database section
+above).
 
-Then: `SUPABASE_URL=https://auth.yourdomain.com`,
-`SUPABASE_SERVICE_ROLE_KEY=<a JWT signed with GOTRUE_JWT_SECRET, role=service_role>`.
-This runs alongside the existing `kortix-api` + worker host (the same
-always-free VM discussed in `y0/docs/VERCEL_FREE_TIER.md` for the Python
-backend) — one more small container, not a new class of infrastructure.
-
-### Option B: migrate to a managed auth provider (e.g. Clerk)
-
-Clerk has a generous free tier (10k MAU) and issues JWTs verifiable via
-JWKS — the same shape `jwt-verify.ts` already expects, so that file adapts
-with a changed JWKS URL rather than a rewrite. This needs real code changes
-though: `src/shared/supabase.ts`'s RPC calls, the frontend's
-`@supabase/ssr` login/session flow, and email/magic-link handling would all
-move to Clerk's SDK. More work, no self-hosted infra.
-
-## Recommendation
-
-Option A. It's a config change plus one small container, not an
-application rewrite, and keeps every line of existing auth-handling code
-working as-is. Option B is the right call only if you specifically want a
-managed auth dashboard/UI rather than owning the auth server yourself.
+This migration is real, sizeable, security-critical, and **completely
+untestable from this session** — see "Why I can't run this myself" above,
+which applies equally to Stack Auth's servers. Paused pending an explicit
+scope decision (full migration of all 13 flows vs. core flows only) rather
+than shipped half-verified.
 
 ## What's not done here
 
-I haven't provisioned a Neon database, generated JWT secrets, or stood up
-GoTrue — that needs your Neon account and a host to run the auth container
-on (same constraint as the Python backend in the free-tier guide: Vercel
-can't run either). This document is the runbook; the actual provisioning
-is a "give me the Neon connection string and I'll wire it in" follow-up
-once you've created the project.
+- Neon database: schema not yet applied (network-blocked from here — see
+  above); apply it yourself with the commands in this doc.
+- Auth: no code written yet. Once scope is confirmed, the migration will
+  land on its own clearly-labeled branch so it can be tested in a Vercel
+  preview before touching production — auth is the one subsystem where
+  "ship it and see" isn't an acceptable way to find out it's broken.
