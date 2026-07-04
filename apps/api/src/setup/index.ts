@@ -19,7 +19,7 @@ import { eq, sql } from 'drizzle-orm';
 import { accounts } from '@kortix/db';
 import { db, hasDatabase } from '../shared/db';
 import { resolveAccountId } from '../shared/resolve-account';
-import { getSupabase } from '../shared/supabase';
+import { listStackAuthUsers, createStackAuthUser, updateStackAuthUserPassword } from '../shared/stack-auth';
 import { checkLocalSandboxHealth, type LocalSandboxHealthCheck } from '../platform/services/local-sandbox-health';
 
 export const setupApp = new Hono<AppEnv>();
@@ -375,20 +375,13 @@ setupApp.post('/bootstrap-owner', async (c) => {
       return c.json({ success: false, error: 'Password must be at least 6 characters' }, 400);
     }
 
-    const supabase = getSupabase();
-    const listed = await supabase.auth.admin.listUsers({ page: 1, perPage: 1 });
-    if (listed.error) {
-      return c.json({ success: false, error: listed.error.message || 'Could not inspect existing users' }, 500);
-    }
-    const firstUser = listed.data?.users?.[0];
+    const listed = await listStackAuthUsers({ limit: 1 });
+    const firstUser = listed[0];
     if (firstUser) {
       if ((firstUser.email || '').toLowerCase() === email) {
-        const updateExisting = await supabase.auth.admin.updateUserById(firstUser.id, {
-          password,
-          email_confirm: true,
-        });
-        if (updateExisting.error) {
-          return c.json({ success: false, error: updateExisting.error.message || 'Could not refresh owner credentials' }, 500);
+        const updated = await updateStackAuthUserPassword(firstUser.id, password);
+        if (!updated) {
+          return c.json({ success: false, error: 'Could not refresh owner credentials' }, 500);
         }
         try {
           const accountId = await resolveAccountId(firstUser.id);
@@ -405,18 +398,17 @@ setupApp.post('/bootstrap-owner', async (c) => {
       return c.json({ success: false, error: `Owner already exists (${firstUser.email})` }, 409);
     }
 
-    const { data, error } = await supabase.auth.admin.createUser({
+    const created = await createStackAuthUser({
       email,
       password,
-      email_confirm: true,
-      user_metadata: { is_owner: true },
+      metadata: { is_owner: true },
     });
 
-    if (error) {
-      return c.json({ success: false, error: error.message || 'Could not create owner' }, 500);
+    if (!created) {
+      return c.json({ success: false, error: 'Could not create owner' }, 500);
     }
 
-    const userId = data.user?.id;
+    const userId = created.id;
     if (userId) {
       try {
         const accountId = await resolveAccountId(userId);

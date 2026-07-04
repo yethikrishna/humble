@@ -6,7 +6,7 @@
  */
 
 import { config } from '../../config';
-import { getSupabase } from '../../shared/supabase';
+import { getStackAuthUserById } from '../../shared/stack-auth';
 
 const MAILTRAP_SEND_URL = 'https://send.api.mailtrap.io/api/send';
 
@@ -26,16 +26,15 @@ export async function sendWorkspaceReadyEmail(opts: {
   const { accountId, sandboxName, sandboxId } = opts;
 
   try {
-    // Look up user email from Supabase auth
-    const supabase = getSupabase();
-    const { data, error } = await supabase.auth.admin.getUserById(accountId);
-    if (error || !data?.user?.email) {
-      console.warn(`[email-notification] Could not resolve email for account ${accountId}:`, error?.message ?? 'no email');
+    // Look up user email from Stack Auth
+    const user = await getStackAuthUserById(accountId);
+    if (!user?.email) {
+      console.warn(`[email-notification] Could not resolve email for account ${accountId}`);
       return;
     }
 
-    const email = data.user.email;
-    const frontendUrl = config.FRONTEND_URL || 'https://app.kortix.com';
+    const email = user.email;
+    const frontendUrl = config.FRONTEND_URL || 'https://humble.vercel.app';
     const instanceUrl = `${frontendUrl}/instances/${sandboxId}`;
 
     const html = `
@@ -63,7 +62,7 @@ export async function sendWorkspaceReadyEmail(opts: {
 <body>
   <div class="container">
     <div class="header">
-      <div class="logo">Kortix</div>
+      <div class="logo">Humble</div>
     </div>
     <div class="body">
       <div class="check">
@@ -76,7 +75,7 @@ export async function sendWorkspaceReadyEmail(opts: {
       <a href="${escapeHtml(instanceUrl)}" class="btn">Open Workspace</a>
     </div>
     <div class="footer">
-      <p>Kortix &mdash; The Autonomous Company Operating System</p>
+      <p>Humble &mdash; The Autonomous Company Operating System</p>
     </div>
   </div>
 </body>

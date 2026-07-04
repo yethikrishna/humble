@@ -47,7 +47,7 @@ const wsHandlers = createWsHandlers(tunnelRelay, {
     const { isTunnelToken, hashSecretKey, deriveSigningKey } = await import('../shared/crypto');
     const { isKortixToken } = await import('../shared/crypto');
     const { validateSecretKey } = await import('../repositories/api-keys');
-    const { getSupabase } = await import('../shared/supabase');
+    const { getCurrentStackAuthUser } = await import('../shared/stack-auth');
     const { eq: eqOp, and: andOp } = await import('drizzle-orm');
     const { tunnelConnections } = await import('@kortix/db');
     const { db } = await import('../shared/db');
@@ -73,9 +73,8 @@ const wsHandlers = createWsHandlers(tunnelRelay, {
       if (result.isValid) accountId = result.accountId!;
     } else {
       try {
-        const supabase = getSupabase();
-        const { data: { user }, error } = await supabase.auth.getUser(token);
-        if (!error && user) accountId = user.id;
+        const user = await getCurrentStackAuthUser(token);
+        if (user) accountId = user.id;
       } catch {}
     }
 

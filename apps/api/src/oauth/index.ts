@@ -452,9 +452,8 @@ oauthApp.get('/userinfo', oauthTokenAuth, async (c) => {
   const userId = c.get('oauthUserId') as string;
   const accountId = c.get('oauthAccountId') as string;
 
-  const { getSupabase } = await import('../shared/supabase');
-  const supabase = getSupabase();
-  const { data: { user } } = await supabase.auth.admin.getUserById(userId);
+  const { getStackAuthUserById } = await import('../shared/stack-auth');
+  const user = await getStackAuthUserById(userId);
 
   return c.json({
     user_id: userId,

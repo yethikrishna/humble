@@ -9,7 +9,7 @@ import { mock } from 'bun:test';
 // ─── Global Mock Registry ─────────────────────────────────────────────────────
 
 export const mockRegistry = {
-  supabaseRpc: null as ReturnType<typeof createMockSupabaseRpc> | null,
+  dbRpc: null as ReturnType<typeof createMockDbRpc> | null,
   stripeClient: null as any,
 
   getCreditAccount: null as ((id: string) => Promise<any>) | null,
@@ -52,13 +52,11 @@ export function registerGlobalMocks() {
   if (_registered) return;
   _registered = true;
 
-  mock.module('../../shared/supabase', () => ({
-    getSupabase: () => ({
-      rpc: (name: string, params?: any) => {
-        if (mockRegistry.supabaseRpc) return mockRegistry.supabaseRpc.rpc(name, params);
-        return Promise.resolve({ data: null, error: null });
-      },
-    }),
+  mock.module('../../shared/db-rpc', () => ({
+    callDbFunction: (name: string, params?: any) => {
+      if (mockRegistry.dbRpc) return mockRegistry.dbRpc.rpc(name, params);
+      return Promise.resolve({ data: null, error: null });
+    },
   }));
 
   mock.module('../../shared/stripe', () => ({
@@ -289,7 +287,7 @@ export function createMockStripeEvent(type: string, object: any, overrides: Reco
   };
 }
 
-export function createMockSupabaseRpc(results: Record<string, { data?: any; error?: any }> = {}) {
+export function createMockDbRpc(results: Record<string, { data?: any; error?: any }> = {}) {
   return {
     rpc: (name: string, params?: any) => {
       const result = results[name];

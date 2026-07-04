@@ -1,4 +1,4 @@
-import { getSupabase } from '../../shared/supabase';
+import { callDbFunction } from '../../shared/db-rpc';
 import {
   getCreditAccount,
   getCreditBalance,
@@ -46,9 +46,13 @@ export async function deductCredits(
   amount: number,
   description: string,
 ) {
-  const supabase = getSupabase();
-
-  const { data, error } = await supabase.rpc('atomic_use_credits', {
+  const { data, error } = await callDbFunction<{
+    success: boolean;
+    error?: string;
+    amount_deducted?: number;
+    new_total?: number;
+    transaction_id?: string;
+  }>('atomic_use_credits', {
     p_account_id: accountId,
     p_amount: amount,
     p_description: description,
@@ -61,13 +65,7 @@ export async function deductCredits(
     throw new InsufficientCreditsError(actualBalance, amount);
   }
 
-  const result = data as {
-    success: boolean;
-    error?: string;
-    amount_deducted?: number;
-    new_total?: number;
-    transaction_id?: string;
-  };
+  const result = data!;
 
   if (!result.success) {
     const account = await getCreditAccount(accountId);
@@ -139,10 +137,9 @@ export async function grantCredits(
   isExpiring: boolean = true,
   stripeEventId?: string,
 ) {
-  const supabase = getSupabase();
   const idempotencyKey = stripeEventId ? `grant:${accountId}:${stripeEventId}` : null;
 
-  const { data, error } = await supabase.rpc('atomic_add_credits', {
+  const { data, error } = await callDbFunction('atomic_add_credits', {
     p_account_id: accountId,
     p_amount: amount,
     p_is_expiring: isExpiring,
@@ -220,9 +217,7 @@ export async function resetExpiringCredits(
   description: string,
   stripeEventId?: string,
 ) {
-  const supabase = getSupabase();
-
-  const { error } = await supabase.rpc('atomic_reset_expiring_credits', {
+  const { error } = await callDbFunction('atomic_reset_expiring_credits', {
     p_account_id: accountId,
     p_description: description,
     p_new_credits: newCredits,

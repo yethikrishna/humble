@@ -24,8 +24,8 @@ import { ensureLocalSandboxPublicBase } from './platform/services/local-public-b
 import { getSandboxBaseUrl, proxyToSandbox } from './sandbox-proxy/routes/local-preview';
 import { validateSecretKey } from './repositories/api-keys';
 import { isKortixToken } from './shared/crypto';
-import { getSupabase } from './shared/supabase';
-import { verifySupabaseJwt } from './shared/jwt-verify';
+import { getCurrentStackAuthUser } from './shared/stack-auth';
+import { verifyStackAuthJwt } from './shared/jwt-verify';
 import { canAccessPreviewSandbox } from './shared/preview-ownership';
 import { setupApp } from './setup';
 import { providersApp } from './providers/routes';
@@ -986,7 +986,7 @@ ${config.KORTIX_DEPLOYMENTS_ENABLED ? '║    /v1/deployments (deploy lifecycle)
 ║    /v1/p         (sandbox proxy — local + cloud)            ║
 ╠═══════════════════════════════════════════════════════════╣
 ║  Database:   ${config.DATABASE_URL ? '✓ Configured'.padEnd(42) : '✗ NOT SET'.padEnd(42)}║
-║  Supabase:   ${config.SUPABASE_URL ? '✓ Configured'.padEnd(42) : '✗ NOT SET'.padEnd(42)}║
+║  Stack Auth: ${config.STACK_PROJECT_ID ? '✓ Configured'.padEnd(42) : '✗ NOT SET'.padEnd(42)}║
 ║  Stripe:     ${config.STRIPE_SECRET_KEY ? '✓ Configured'.padEnd(42) : '✗ NOT SET'.padEnd(42)}║
 ║  Billing:    ${(config.KORTIX_BILLING_INTERNAL_ENABLED ? 'ENABLED' : 'DISABLED').padEnd(42)}║
 ║  Tunnel:     ${(config.TUNNEL_ENABLED ? 'ENABLED' : 'DISABLED').padEnd(42)}║
@@ -1141,7 +1141,7 @@ async function validatePreviewToken(token: string, sandboxId: string): Promise<b
     });
   }
   // Fast path: local JWT verification (no network roundtrip)
-  const local = await verifySupabaseJwt(token);
+  const local = await verifyStackAuthJwt(token);
   if (local.ok) {
     return canAccessPreviewSandbox({
       previewSandboxId: sandboxId,
@@ -1152,9 +1152,8 @@ async function validatePreviewToken(token: string, sandboxId: string): Promise<b
   if (local.reason !== 'no-keys' && local.reason !== 'no-key-for-kid') return false;
   // JWKS not yet available — fall back to network call
   try {
-    const supabase = getSupabase();
-    const { data: { user }, error } = await supabase.auth.getUser(token);
-    if (error || !user) return false;
+    const user = await getCurrentStackAuthUser(token);
+    if (!user) return false;
     return canAccessPreviewSandbox({
       previewSandboxId: sandboxId,
       userId: user.id,

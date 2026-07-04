@@ -133,12 +133,14 @@ mock.module('../billing/services/account-deletion', () => ({
   },
 }));
 
-// Supabase + Stripe mocks (prevent imports from failing)
-mock.module('../shared/supabase', () => ({
-  getSupabase: () => ({
-    rpc: () => Promise.resolve({ data: null, error: null }),
-    auth: { getUser: async () => ({ data: { user: null }, error: 'mocked' }) },
-  }),
+// Stack Auth + db-rpc + Stripe mocks (prevent imports from failing)
+mock.module('../shared/stack-auth', () => ({
+  getCurrentStackAuthUser: async () => null,
+  isStackAuthConfigured: () => false,
+}));
+
+mock.module('../shared/db-rpc', () => ({
+  callDbFunction: () => Promise.resolve({ data: null, error: null }),
 }));
 
 mock.module('../shared/stripe', () => ({

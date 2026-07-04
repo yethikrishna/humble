@@ -267,11 +267,11 @@ function getAdminKeySchema(): Record<string, KeyGroup> {
     },
     core: {
       title: 'Core Infrastructure',
-      description: 'Database, Supabase, and API security keys.',
+      description: 'Database, Stack Auth (Neon Auth), and API security keys.',
       keys: [
         { key: 'DATABASE_URL', label: 'Database URL', secret: true },
-        { key: 'SUPABASE_URL', label: 'Supabase URL' },
-        { key: 'SUPABASE_SERVICE_ROLE_KEY', label: 'Supabase Service Role Key', secret: true },
+        { key: 'STACK_PROJECT_ID', label: 'Stack Auth Project ID' },
+        { key: 'STACK_SECRET_SERVER_KEY', label: 'Stack Auth Secret Server Key', secret: true },
         { key: 'API_KEY_SECRET', label: 'API Key Hashing Secret', secret: true },
       ],
     },
@@ -1336,7 +1336,7 @@ adminApp.get('/api/status', async (c) => {
     daytonaEnabled: config.isDaytonaEnabled(),
     localDockerEnabled: config.isLocalDockerEnabled(),
     databaseConfigured: !!config.DATABASE_URL,
-    supabaseConfigured: !!config.SUPABASE_URL,
+    stackAuthConfigured: !!config.STACK_PROJECT_ID,
     stripeConfigured: !!config.STRIPE_SECRET_KEY,
   });
 });
@@ -2224,7 +2224,7 @@ function getAdminHTML(): string {
           ['Daytona', data.daytonaEnabled ? 'Enabled' : 'Disabled'],
           ['Local Docker', data.localDockerEnabled ? 'Enabled' : 'Disabled'],
           ['Database', data.databaseConfigured ? 'Configured' : 'Not Set'],
-          ['Supabase', data.supabaseConfigured ? 'Configured' : 'Not Set'],
+          ['Stack Auth', data.stackAuthConfigured ? 'Configured' : 'Not Set'],
           ['Stripe', data.stripeConfigured ? 'Configured' : 'Not Set'],
         ];
 

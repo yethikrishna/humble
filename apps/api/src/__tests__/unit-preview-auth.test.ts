@@ -44,7 +44,7 @@ mock.module('../shared/crypto', () => ({
 }));
 
 mock.module('../shared/jwt-verify', () => ({
-  verifySupabaseJwt: async (token: string) => {
+  verifyStackAuthJwt: async (token: string) => {
     if (token === 'jwt-owner') {
       return { ok: true, userId: 'user-owner', email: 'owner@kortix.dev' };
     }
@@ -58,12 +58,9 @@ mock.module('../shared/jwt-verify', () => ({
   },
 }));
 
-mock.module('../shared/supabase', () => ({
-  getSupabase: () => ({
-    auth: {
-      getUser: async () => ({ data: { user: mockSupabaseUser }, error: mockSupabaseUser ? null : { message: 'invalid' } }),
-    },
-  }),
+mock.module('../shared/stack-auth', () => ({
+  getCurrentStackAuthUser: async () => mockSupabaseUser,
+  isStackAuthConfigured: () => true,
 }));
 
 mock.module('../config', () => ({
@@ -190,7 +187,7 @@ describe('preview auth ownership', () => {
     expect(res.status).toBe(200);
   });
 
-  test('allows jwt owner via Supabase fallback path', async () => {
+  test('allows jwt owner via Stack Auth fallback path', async () => {
     const app = createApp();
     mockResolvedAccountId = 'acct-owner';
     mockSupabaseUser = { id: 'user-fallback-owner', email: 'fallback@kortix.dev' };
@@ -200,7 +197,7 @@ describe('preview auth ownership', () => {
     expect(res.status).toBe(200);
   });
 
-  test('rejects jwt via Supabase fallback without ownership', async () => {
+  test('rejects jwt via Stack Auth fallback without ownership', async () => {
     const app = createApp();
     mockResolvedAccountId = 'acct-other';
     mockSupabaseUser = { id: 'user-fallback-other', email: 'other@kortix.dev' };

@@ -62,17 +62,33 @@ const envSchema = z.object({
   ENV_MODE:                    z.enum(['local', 'cloud']).optional().default('local'),
 
   // ── Database (REQUIRED) ──────────────────────────────────────────────────
-  DATABASE_URL: z.string().min(1, 'DATABASE_URL is required — cannot start without a database'),
+  // Must be a real postgres(ql):// connection string (Neon or otherwise) —
+  // a short/placeholder value fails fast at startup rather than at the
+  // first query.
+  DATABASE_URL: z.string()
+    .min(20, 'DATABASE_URL is required — cannot start without a database')
+    .refine((v) => /^postgres(ql)?:\/\/.+/.test(v), {
+      message: 'DATABASE_URL must be a postgres:// or postgresql:// connection string',
+    }),
 
-  // ── Supabase (REQUIRED) ──────────────────────────────────────────────────
-  SUPABASE_URL: z.string().min(1, 'SUPABASE_URL is required').refine(
-    (v) => /^https?:\/\//.test(v),
-    { message: 'SUPABASE_URL must be a valid HTTP(S) URL' },
-  ),
-  SUPABASE_SERVICE_ROLE_KEY: z.string().min(1, 'SUPABASE_SERVICE_ROLE_KEY is required'),
+  // ── Stack Auth / Neon Auth (REQUIRED) ────────────────────────────────────
+  // Replaces Supabase Auth. STACK_PROJECT_ID is the Stack Auth project id
+  // (same value as the frontend's NEXT_PUBLIC_STACK_PROJECT_ID).
+  // STACK_SECRET_SERVER_KEY is privileged — server-side only, never exposed
+  // to the client. Both are validated for a minimum length so a blank or
+  // placeholder value fails fast at startup instead of silently producing
+  // a client that can never authenticate a real request.
+  STACK_PROJECT_ID: z.string().min(8, 'STACK_PROJECT_ID is required (Stack Auth / Neon Auth project id)'),
+  STACK_SECRET_SERVER_KEY: z.string().min(16, 'STACK_SECRET_SERVER_KEY is required — server-side Stack Auth secret key'),
+  // Override only if self-hosting Stack Auth or using a non-default region;
+  // defaults to Stack Auth's managed API.
+  STACK_API_URL: z.string().url().optional().default('https://api.stack-auth.com'),
 
   // ── API Key Hashing (REQUIRED) ───────────────────────────────────────────
-  API_KEY_SECRET: z.string().min(1, 'API_KEY_SECRET is required — API key hashing will fail'),
+  // HMAC secret — a short value is brute-forceable, so require enough
+  // entropy for a hex/base64 256-bit key (32+ chars) rather than just
+  // "present".
+  API_KEY_SECRET: z.string().min(32, 'API_KEY_SECRET is required — use a 64-char hex string (openssl rand -hex 32)'),
 
   // ── Internal Deployment Controls (optional, safe defaults for self-hosted) ─
   INTERNAL_KORTIX_ENV:              z.enum(['dev', 'staging', 'prod']).optional().default('dev'),
@@ -365,9 +381,10 @@ export const config = {
   // ─── Database ──────────────────────────────────────────────────────────────
   DATABASE_URL: env.DATABASE_URL,
 
-  // ─── Supabase ──────────────────────────────────────────────────────────────
-  SUPABASE_URL: env.SUPABASE_URL,
-  SUPABASE_SERVICE_ROLE_KEY: env.SUPABASE_SERVICE_ROLE_KEY,
+  // ─── Stack Auth / Neon Auth ──────────────────────────────────────────────────
+  STACK_PROJECT_ID: env.STACK_PROJECT_ID,
+  STACK_SECRET_SERVER_KEY: env.STACK_SECRET_SERVER_KEY,
+  STACK_API_URL: env.STACK_API_URL,
 
   // ─── API Key Hashing ──────────────────────────────────────────────────────
   API_KEY_SECRET: env.API_KEY_SECRET,

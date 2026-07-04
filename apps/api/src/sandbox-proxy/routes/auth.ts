@@ -12,7 +12,7 @@
 import { Hono } from 'hono';
 import { validateSecretKey } from '../../repositories/api-keys';
 import { isKortixToken } from '../../shared/crypto';
-import { getSupabase } from '../../shared/supabase';
+import { getCurrentStackAuthUser } from '../../shared/stack-auth';
 
 const PREVIEW_SESSION_COOKIE = '__preview_session';
 const COOKIE_MAX_AGE = 3600; // 1 hour
@@ -39,9 +39,8 @@ getAuthToken.post('/', async (c) => {
     }
   } else {
     try {
-      const supabase = getSupabase();
-      const { data: { user }, error } = await supabase.auth.getUser(token);
-      if (error || !user) {
+      const user = await getCurrentStackAuthUser(token);
+      if (!user) {
         return c.json({ error: 'Invalid or expired token' }, 401);
       }
     } catch {

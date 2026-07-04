@@ -1,7 +1,7 @@
 import { eq } from 'drizzle-orm';
-import { sql } from 'drizzle-orm';
 import { creditAccounts } from '@kortix/db';
 import { db } from '../shared/db';
+import { callDbFunction } from '../shared/db-rpc';
 import { config } from '../config';
 
 export interface CreditBalance {
@@ -112,25 +112,22 @@ export async function deductCredits(
   }
 
   try {
-    const result = await db.execute(sql`SELECT atomic_use_credits(
-      ${accountId}::uuid,
-      ${amount}::numeric,
-      ${description}::text
-    ) as result`);
-
-    const row = result[0] as Record<string, unknown> | undefined;
-    const data = row?.result as {
+    const { data, error: rpcError } = await callDbFunction<{
       success: boolean;
       error?: string;
       amount_deducted?: number;
       new_total?: number;
       transaction_id?: string;
-    } | undefined;
+    }>('atomic_use_credits', {
+      p_account_id: accountId,
+      p_amount: amount,
+      p_description: description,
+    });
 
-    if (!data || !data.success) {
+    if (rpcError || !data || !data.success) {
       return {
         success: false,
-        error: data?.error || 'Unknown error',
+        error: data?.error || rpcError?.message || 'Unknown error',
       };
     }
 

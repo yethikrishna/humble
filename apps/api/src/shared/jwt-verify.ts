@@ -1,15 +1,18 @@
 /**
  * Local JWT verification using Web Crypto API (no network roundtrip).
  *
- * Supabase JWTs are signed with ES256 (ECDSA P-256). We fetch the JWKS once
- * at startup and verify tokens locally — no call to /auth/v1/user per request.
+ * Stack Auth (Neon Auth) JWTs are signed with ES256, RS256, or EdDSA
+ * (Ed25519) depending on project configuration. We fetch the JWKS once at
+ * startup and verify tokens locally — no call to the Stack Auth API per
+ * request.
  *
- * Why: supabase.auth.getUser() makes a live HTTP call every time. On local dev
- * any transient blip to 127.0.0.1:54321 → intermittent 401 on valid tokens.
- * Local verification is also ~10x faster.
+ * Why: a REST call to fetch the current user makes a live HTTP roundtrip
+ * every time. Local verification is also ~10x faster and doesn't depend on
+ * Stack Auth's API being reachable for every single request.
  *
- * Fallback: if JWKS fetch fails (Supabase not up yet) or key is unknown, we
- * fall back to the network call so nothing breaks during cold starts.
+ * Fallback: if JWKS fetch fails (Stack Auth not reachable yet) or the key
+ * is unknown, we fall back to the REST call so nothing breaks during cold
+ * starts. See stack-auth.ts for that fallback.
  */
 
 import { config } from '../config';
@@ -37,12 +40,17 @@ const keyCache = new Map<string, CryptoKey>();
 let jwksFetchedAt = 0;
 const JWKS_TTL_MS = 60 * 60 * 1000; // 1 hour
 
+function jwksUrl(): string | null {
+  if (!config.STACK_PROJECT_ID) return null;
+  return `${config.STACK_API_URL}/api/v1/projects/${config.STACK_PROJECT_ID}/.well-known/jwks.json`;
+}
+
 async function loadJwks(): Promise<void> {
-  const supabaseUrl = config.SUPABASE_URL;
-  if (!supabaseUrl) return;
+  const url = jwksUrl();
+  if (!url) return;
 
   try {
-    const res = await fetch(`${supabaseUrl}/auth/v1/.well-known/jwks.json`, {
+    const res = await fetch(url, {
       signal: AbortSignal.timeout(5_000),
     });
     if (!res.ok) return;
@@ -57,6 +65,8 @@ async function loadJwks(): Promise<void> {
           algorithm = { name: 'ECDSA', namedCurve: 'P-256' } as EcKeyImportParams;
         } else if (jwk.alg === 'RS256' || jwk.kty === 'RSA') {
           algorithm = { name: 'RSASSA-PKCS1-v1_5', hash: 'SHA-256' } as RsaHashedImportParams;
+        } else if (jwk.alg === 'EdDSA' || (jwk.kty === 'OKP' && jwk.crv === 'Ed25519')) {
+          algorithm = { name: 'Ed25519' } as AlgorithmIdentifier;
         } else {
           continue; // Unknown algorithm — skip
         }
@@ -70,13 +80,14 @@ async function loadJwks(): Promise<void> {
         );
         keyCache.set(jwk.kid, key);
       } catch {
-        // Skip malformed keys
+        // Skip malformed keys, or keys whose algorithm this runtime's Web
+        // Crypto implementation doesn't support (e.g. older Ed25519 support)
       }
     }
 
     jwksFetchedAt = Date.now();
   } catch {
-    // Supabase not reachable yet — will retry on next auth check
+    // Stack Auth not reachable yet — will retry on next auth check
   }
 }
 
@@ -101,6 +112,7 @@ interface JwtPayload {
   iss?: string;
   aud?: string | string[];
   role?: string;
+  primaryEmail?: string;
   aal?: string;
   session_id?: string;
   is_anonymous?: boolean;
@@ -127,12 +139,12 @@ interface VerifyFailure {
 }
 
 /**
- * Verify a Supabase JWT locally using cached JWKS.
+ * Verify a Stack Auth (Neon Auth) JWT locally using cached JWKS.
  *
  * Returns `{ ok: false, reason: 'no-keys' }` when JWKS is unavailable —
- * callers should fall back to the network getUser() call in that case.
+ * callers should fall back to the REST getCurrentUser() call in that case.
  */
-export async function verifySupabaseJwt(token: string): Promise<VerifyResult | VerifyFailure> {
+export async function verifyStackAuthJwt(token: string): Promise<VerifyResult | VerifyFailure> {
   await ensureKeys();
 
   if (keyCache.size === 0) {
@@ -178,6 +190,8 @@ export async function verifySupabaseJwt(token: string): Promise<VerifyResult | V
     algorithm = { name: 'ECDSA', hash: 'SHA-256' } as EcdsaParams;
   } else if (header.alg === 'RS256') {
     algorithm = { name: 'RSASSA-PKCS1-v1_5' };
+  } else if (header.alg === 'EdDSA') {
+    algorithm = { name: 'Ed25519' };
   } else {
     return { ok: false, reason: `unsupported-alg:${header.alg}` };
   }
@@ -216,7 +230,7 @@ export async function verifySupabaseJwt(token: string): Promise<VerifyResult | V
   return {
     ok: true,
     userId: payload.sub,
-    email: payload.email || payload.user_metadata?.email as string || '',
+    email: payload.email || payload.primaryEmail || (payload.user_metadata?.email as string) || '',
     payload,
   };
 }

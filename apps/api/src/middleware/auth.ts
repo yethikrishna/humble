@@ -3,8 +3,8 @@ import { HTTPException } from 'hono/http-exception';
 import { validateSecretKey } from '../repositories/api-keys';
 import { isKortixToken } from '../shared/crypto';
 import { canAccessPreviewSandbox } from '../shared/preview-ownership';
-import { getSupabase } from '../shared/supabase';
-import { verifySupabaseJwt } from '../shared/jwt-verify';
+import { getCurrentStackAuthUser } from '../shared/stack-auth';
+import { verifyStackAuthJwt } from '../shared/jwt-verify';
 import { config } from '../config';
 import { setSentryUser } from '../lib/sentry';
 import { setContextField } from '../lib/request-context';
@@ -28,8 +28,8 @@ function isLocalPreviewBypassRequest(c: Context, previewSandboxId: string | null
 // Auth Middleware (3 middlewares — one per auth strategy)
 //
 //   1. apiKeyAuth      — Kortix API keys only (header)
-//   2. supabaseAuth    — Supabase JWT only (header)
-//   3. combinedAuth    — Kortix OR Supabase (header + cookie fallback)
+//   2. supabaseAuth    — Stack Auth JWT only (header)
+//   3. combinedAuth    — Kortix OR Stack Auth (header + cookie fallback)
 //
 // Token is read from query parameters ONLY as a last resort for preview proxy
 // routes (/v1/p/*) — browser WebSocket API can't set custom headers, so PTY
@@ -83,7 +83,7 @@ export async function apiKeyAuth(c: Context, next: Next) {
 }
 
 /**
- * Supabase JWT auth (for billing, platform, admin routes).
+ * Stack Auth JWT auth (for billing, platform, admin routes).
  * Header-only — sets userId and userEmail in context on success.
  */
 export async function supabaseAuth(c: Context, next: Next) {
@@ -99,7 +99,7 @@ export async function supabaseAuth(c: Context, next: Next) {
   }
 
   // Fast path: verify JWT locally (no network roundtrip)
-  const local = await verifySupabaseJwt(token);
+  const local = await verifyStackAuthJwt(token);
   if (local.ok) {
     c.set('userId', local.userId);
     c.set('userEmail', local.email);
@@ -117,13 +117,9 @@ export async function supabaseAuth(c: Context, next: Next) {
   }
 
   try {
-    const supabase = getSupabase();
-    const {
-      data: { user },
-      error,
-    } = await supabase.auth.getUser(token);
+    const user = await getCurrentStackAuthUser(token);
 
-    if (error || !user) {
+    if (!user) {
       throw new HTTPException(401, { message: 'Invalid or expired token' });
     }
 
@@ -236,8 +232,8 @@ export async function combinedAuth(c: Context, next: Next) {
     return;
   }
 
-  // 2. Try Supabase JWT — fast path: local verification (no network roundtrip)
-  const local = await verifySupabaseJwt(token);
+  // 2. Try Stack Auth JWT — fast path: local verification (no network roundtrip)
+  const local = await verifyStackAuthJwt(token);
   if (local.ok) {
     if (previewSandboxId && !(await canAccessPreviewSandbox({
       previewSandboxId,
@@ -262,10 +258,9 @@ export async function combinedAuth(c: Context, next: Next) {
 
   // JWKS not yet loaded — fall back to network getUser() call
   try {
-    const supabase = getSupabase();
-    const { data: { user }, error } = await supabase.auth.getUser(token);
+    const user = await getCurrentStackAuthUser(token);
 
-    if (error || !user) {
+    if (!user) {
       throw new HTTPException(401, { message: 'Invalid or expired token' });
     }
 
