@@ -61,17 +61,17 @@ export default function CareersPageClient() {
         <Reveal>
           <div className="mt-14 pt-8 border-t border-border">
             <p className="text-base text-muted-foreground leading-relaxed">
-              If this sounds like you, just reach out. I{"'"}m Marko.
+              If this sounds like you, just reach out. I{"'"}m Yethikrishna.
             </p>
             <div className="flex flex-col gap-1.5 mt-3">
-              <a href="mailto:marko@kortix.com" className="text-base text-foreground font-medium underline underline-offset-4 decoration-foreground/40 hover:decoration-foreground transition-colors w-fit">
-                marko@kortix.com
+              <a href="mailto:yethikrishnarcvn7a@gmail.com" className="text-base text-foreground font-medium underline underline-offset-4 decoration-foreground/40 hover:decoration-foreground transition-colors w-fit">
+                yethikrishnarcvn7a@gmail.com
               </a>
-              <a href="https://x.com/markokraemer" target="_blank" rel="noopener noreferrer" className="text-base text-foreground font-medium underline underline-offset-4 decoration-foreground/40 hover:decoration-foreground transition-colors w-fit">
-                @markokraemer
+              <a href="https://x.com/yethikrishna_r" target="_blank" rel="noopener noreferrer" className="text-base text-foreground font-medium underline underline-offset-4 decoration-foreground/40 hover:decoration-foreground transition-colors w-fit">
+                @yethikrishna_r
               </a>
-              <a href="https://linkedin.com/in/markokraemer" target="_blank" rel="noopener noreferrer" className="text-base text-foreground font-medium underline underline-offset-4 decoration-foreground/40 hover:decoration-foreground transition-colors w-fit">
-                linkedin.com/in/markokraemer
+              <a href="https://www.linkedin.com/in/yethikrishna-r-313530201" target="_blank" rel="noopener noreferrer" className="text-base text-foreground font-medium underline underline-offset-4 decoration-foreground/40 hover:decoration-foreground transition-colors w-fit">
+                linkedin.com/in/yethikrishna-r-313530201
               </a>
             </div>
           </div>

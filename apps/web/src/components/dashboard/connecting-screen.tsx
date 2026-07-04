@@ -422,10 +422,10 @@ function SupportFooter() {
     <p className="pointer-events-auto absolute bottom-7 left-0 right-0 text-center text-[12px] text-muted-foreground/60">
       Having trouble? Contact{' '}
       <a
-        href="mailto:support@kortix.com"
+        href="mailto:yethikrishnarcvn7a@gmail.com"
         className="font-medium text-foreground/80 underline-offset-4 transition-colors hover:text-foreground hover:underline"
       >
-        support@kortix.com
+        yethikrishnarcvn7a@gmail.com
       </a>
     </p>
   );

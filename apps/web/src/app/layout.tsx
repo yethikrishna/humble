@@ -83,8 +83,8 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: siteMetadata.title,
     description: siteMetadata.description,
-    creator: '@humble',
-    site: '@humble',
+    creator: '@yethikrishna_r',
+    site: '@yethikrishna_r',
     images: ['/banner.png'],
   },
   icons: {
@@ -204,7 +204,7 @@ export default async function RootLayout({
         <meta name="twitter:title" content="Humble – The Autonomous Company Operating System" />
         <meta name="twitter:description" content="A cloud computer where AI agents run your company. Connect 3,000+ tools, configure autonomous agents, set triggers — and the machine operates 24/7 with persistent memory." />
         <meta name="twitter:image" content="/banner.png" />
-        <meta name="twitter:site" content="@humble" />
+        <meta name="twitter:site" content="@yethikrishna_r" />
         <link rel="canonical" href="https://humble.yethikrishnar.pw" />
 
         {/* iOS Smart App Banner - shows native install banner in Safari */}
@@ -228,8 +228,9 @@ export default async function RootLayout({
               foundingDate: '2024',
               sameAs: [
                 'https://github.com/yethikrishna/humble',
-                'https://x.com/humble',
-                'https://linkedin.com/company/humble',
+                'https://x.com/yethikrishna_r',
+                'https://www.linkedin.com/in/yethikrishna-r-313530201',
+                'https://founder.myndlabs.tech',
               ],
               contactPoint: {
                 '@type': 'ContactPoint',

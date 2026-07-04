@@ -19,7 +19,7 @@ const KortixBoxScene = dynamic(() => import('@/components/landing/KortixBoxScene
   loading: () => <div className="animate-pulse bg-foreground/5 w-full h-full rounded-full blur-3xl opacity-20" />
 });
 
-const INSTALL_CMD = 'curl -fsSL https://kortix.com/install | bash';
+const INSTALL_CMD = 'git clone https://github.com/yethikrishna/humble';
 
 // ─── Reusable Components ────────────────────────────────
 
@@ -164,7 +164,7 @@ export default function Variant2Home() {
             </Reveal>
             <Reveal delay={0.1}>
               <p className="mt-4 text-base sm:text-lg text-muted-foreground leading-relaxed max-w-2xl">
-                A Kortix is a cloud computer where AI agents do the actual work of running a company. You connect your tools, define your agents, set their schedules and triggers — and the machine operates whether you&apos;re there or not. Persistent memory that compounds. A workforce that never stops.
+                A Humble is a cloud computer where AI agents do the actual work of running a company. You connect your tools, define your agents, set their schedules and triggers — and the machine operates whether you&apos;re there or not. Persistent memory that compounds. A workforce that never stops.
               </p>
             </Reveal>
           </div>
@@ -225,7 +225,7 @@ export default function Variant2Home() {
                 </Reveal>
                 <Reveal delay={0.1}>
                   <p className="text-base text-muted-foreground leading-relaxed mb-8">
-                    Kortix runs on <a href="https://opencode.ai" target="_blank" rel="noopener noreferrer" className="hover:text-foreground/80 transition-colors">OpenCode</a>, an open foundation for building knowledge work agents, with the Kortix cognitive architecture layered on top. Everything is just files.
+                    Humble runs on <a href="https://opencode.ai" target="_blank" rel="noopener noreferrer" className="hover:text-foreground/80 transition-colors">OpenCode</a>, an open foundation for building knowledge work agents, with the Humble cognitive architecture layered on top. Everything is just files.
                   </p>
                 </Reveal>
                 <Reveal delay={0.2}>
@@ -257,7 +257,7 @@ export default function Variant2Home() {
                       <div className="size-2.5 rounded-full bg-muted-foreground/15" />
                       <div className="size-2.5 rounded-full bg-muted-foreground/15" />
                     </div>
-                    <span className="text-[10px] font-mono text-muted-foreground ml-1">kortix — session</span>
+                    <span className="text-[10px] font-mono text-muted-foreground ml-1">humble — session</span>
                   </div>
                   <div className="p-5 space-y-5">
                     <div className="space-y-1">
@@ -307,7 +307,7 @@ export default function Variant2Home() {
                       <div className="size-2.5 rounded-full bg-muted-foreground/15" />
                       <div className="size-2.5 rounded-full bg-muted-foreground/15" />
                     </div>
-                    <span className="text-[10px] font-mono text-muted-foreground uppercase tracking-widest">root@kortix ~ kortix status</span>
+                    <span className="text-[10px] font-mono text-muted-foreground uppercase tracking-widest">root@humble ~ humble status</span>
                     <div className="size-2.5 opacity-0" />
                   </div>
                   <div className="p-5 space-y-1 text-[11px]">

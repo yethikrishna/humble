@@ -9,7 +9,7 @@
  *   POST /platform/sandbox/stop       — stop the active sandbox
  *   POST /platform/sandbox/restart    — restart the active sandbox
  *
- * In production: https://api.kortix.com/v1/platform/*  (base URL includes /v1)
+ * In production: https://api.yethikrishnar.pw/v1/platform/*  (base URL includes /v1)
  * In local:      http://localhost:8008/v1/platform/*  (base URL includes /v1)
  */
 

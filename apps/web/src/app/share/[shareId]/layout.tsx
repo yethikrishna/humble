@@ -4,9 +4,9 @@ import { getServerPublicEnv } from '@/lib/public-env-server';
 export async function generateMetadata({ params }: { params: Promise<{ shareId: string }> }): Promise<Metadata> {
   const { shareId } = await params;
 
-  const title = 'Shared Conversation | Kortix';
-  const description = 'Replay this Worker conversation on Kortix';
-  const url = getServerPublicEnv().APP_URL || 'https://www.kortix.com';
+  const title = 'Shared Conversation | Humble';
+  const description = 'Replay this Worker conversation on Humble';
+  const url = getServerPublicEnv().APP_URL || 'https://humble.yethikrishnar.pw';
 
   return {
     title,
