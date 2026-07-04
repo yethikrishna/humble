@@ -553,7 +553,7 @@ function SidebarUpdateIndicator({ collapsed }: { collapsed: boolean }) {
           <span className="relative inline-flex h-2 w-2 rounded-full bg-primary" />
         </span>
         <span className="text-xs font-semibold text-foreground truncate min-w-0">
-          {currentChannel === 'dev' ? 'New dev build' : 'New Kortix version'}
+          {currentChannel === 'dev' ? 'New dev build' : 'New Humble version'}
         </span>
         <span className="flex-1" />
         <span className="text-[10px] text-muted-foreground flex-shrink-0">v{latestVersion}</span>

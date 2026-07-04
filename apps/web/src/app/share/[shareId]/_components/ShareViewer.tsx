@@ -309,7 +309,7 @@ function AssistantBlock({
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src="/kortix-logomark-white.svg"
-          alt="Kortix"
+          alt="Humble"
           className="dark:invert-0 invert flex-shrink-0"
           style={{ height: '12px', width: 'auto' }}
         />

@@ -1,7 +1,7 @@
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Configuration | Kortix',
+  title: 'Configuration | Humble',
   description: 'OpenCode configuration settings',
 };
 

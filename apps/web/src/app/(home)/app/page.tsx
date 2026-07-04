@@ -83,11 +83,11 @@ export default function AppDownloadPage() {
             </div>
             
             <h1 className="text-2xl md:text-3xl font-semibold text-foreground text-center tracking-tight mb-3">
-              Kortix for Mobile
+              Humble for Mobile
             </h1>
             <p className="text-base text-muted-foreground text-center max-w-xl leading-relaxed">
               Your AI Worker, in your pocket.<br />
-              Download the app and take Kortix with you everywhere.
+              Download the app and take Humble with you everywhere.
             </p>
           </motion.div>
 

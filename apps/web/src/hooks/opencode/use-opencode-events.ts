@@ -820,7 +820,7 @@ export function useOpenCodeEventStream() {
 						const questionText =
 							props.questions?.[0]?.question ||
 							props.questions?.[0]?.header ||
-							"Kortix needs your input";
+							"Humble needs your input";
 						notifyQuestion(
 							props.sessionID,
 							questionText,

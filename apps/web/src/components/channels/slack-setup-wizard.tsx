@@ -212,7 +212,7 @@ export function SlackSetupWizard({ onCreated, onBack }: SlackSetupWizardProps) {
               <Label htmlFor="slack-bot-name">Bot Name</Label>
               <Input
                 id="slack-bot-name"
-                placeholder="Kortix Agent"
+                placeholder="Humble Agent"
                 value={botName}
                 onChange={(e) => setBotName(e.target.value)}
               />

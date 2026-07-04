@@ -750,7 +750,7 @@ export default function DashboardLayoutContent({
 				}
 
 				if (!sid) {
-					const s = await createSessionRef.current.mutateAsync({ title: "Kortix Onboarding" });
+					const s = await createSessionRef.current.mutateAsync({ title: "Humble Onboarding" });
 					persistEnv("ONBOARDING_SESSION_ID", s.id);
 					sid = s.id;
 					needsCmd = true;
@@ -764,7 +764,7 @@ export default function DashboardLayoutContent({
 				}
 
 				ob.setSessionId(sid);
-				useTabStore.getState().openTab({ id: sid, title: "Kortix Onboarding", type: "session", href: `/sessions/${sid}` });
+				useTabStore.getState().openTab({ id: sid, title: "Humble Onboarding", type: "session", href: `/sessions/${sid}` });
 			} catch (err) {
 				obCreating.current = false;
 				obRetries.current++;

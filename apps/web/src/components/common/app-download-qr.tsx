@@ -51,7 +51,7 @@ export function AppDownloadQR({
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img 
         src={qrUrl}
-        alt="Scan to download Kortix - redirects to App Store or Google Play based on your device"
+        alt="Scan to download Humble - redirects to App Store or Google Play based on your device"
         width={size}
         height={size}
         className="block"
