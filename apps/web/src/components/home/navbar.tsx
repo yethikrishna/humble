@@ -1,7 +1,7 @@
 'use client';
 
 import { ThemeToggle } from '@/components/home/theme-toggle';
-import { siteConfig } from '@/lib/site-config';
+import { useBrand } from '@/lib/brands/brand-provider';
 import { cn } from '@/lib/utils';
 import { X, Menu, Type, Layers, Gem } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -157,8 +157,10 @@ export function Navbar({ isAbsolute = false }: NavbarProps) {
   const t = useTranslations('common');
   const lastScrollY = useRef(0);
 
-  const filteredNavLinks = siteConfig.nav.links;
-  const { formattedStars, loading: starsLoading } = useGitHubStars('kortix-ai', 'kortix');
+  const brand = useBrand();
+  const filteredNavLinks = brand.nav.links;
+  const [githubOwner, githubRepo] = new URL(brand.githubUrl).pathname.slice(1).split('/');
+  const { formattedStars, loading: starsLoading } = useGitHubStars(githubOwner, githubRepo);
 
   const ctaLink = '/auth';
 
@@ -304,7 +306,7 @@ export function Navbar({ isAbsolute = false }: NavbarProps) {
               onClick={() => { trackCtaSignup(); router.push(ctaLink); }}
               variant="ghost"
               size="icon"
-              aria-label="Launch Humble"
+              aria-label={brand.launchCta}
               className="opacity-80 hover:opacity-100"
             >
               <svg viewBox="0 0 24 24" className="size-[20px]" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round">

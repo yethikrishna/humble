@@ -1,5 +1,4 @@
 import { ThemeProvider } from '@/components/home/theme-provider';
-import { siteMetadata } from '@/lib/site-metadata';
 import type { Metadata, Viewport } from 'next';
 import './globals.css';
 import { AuthProvider } from '@/components/AuthProvider';
@@ -13,6 +12,9 @@ import { I18nProvider } from '@/components/i18n-provider';
 import { getServerPublicEnv } from '@/lib/public-env-server';
 import { featureFlags } from '@/lib/feature-flags';
 import { connection } from 'next/server';
+import { headers } from 'next/headers';
+import { getBrandForHost } from '@/lib/brands/config';
+import { BrandProvider } from '@/lib/brands/brand-provider';
 
 // Lazy load non-critical analytics and global components
 const Analytics = lazy(() => import('@vercel/analytics/react').then(mod => ({ default: mod.Analytics })));
@@ -40,66 +42,71 @@ export const viewport: Viewport = {
   viewportFit: 'cover',
 };
 
-export const metadata: Metadata = {
-  metadataBase: new URL(siteMetadata.url),
-  title: {
-    default: siteMetadata.title,
-    template: `%s | ${siteMetadata.name}`,
-  },
-  description: siteMetadata.description,
-  keywords: siteMetadata.keywords,
-  authors: [{ name: 'Humble Team', url: 'https://github.com/yethikrishna/humble' }],
-  creator: 'Humble Team',
-  publisher: 'Humble Team',
-  applicationName: siteMetadata.name,
-  robots: {
-    index: true,
-    follow: true,
-    googleBot: {
+export async function generateMetadata(): Promise<Metadata> {
+  const host = (await headers()).get('host');
+  const brand = getBrandForHost(host);
+
+  return {
+    metadataBase: new URL(brand.url),
+    title: {
+      default: brand.title,
+      template: `%s | ${brand.name}`,
+    },
+    description: brand.description,
+    keywords: brand.keywords,
+    authors: [{ name: 'Yethikrishna R', url: brand.githubUrl }],
+    creator: 'Yethikrishna R',
+    publisher: 'Yethikrishna R',
+    applicationName: brand.name,
+    robots: {
       index: true,
       follow: true,
-      'max-video-preview': -1,
-      'max-image-preview': 'large',
-      'max-snippet': -1,
-    },
-  },
-  openGraph: {
-    type: 'website',
-    title: siteMetadata.title,
-    description: siteMetadata.description,
-    url: siteMetadata.url,
-    siteName: siteMetadata.name,
-    locale: 'en_US',
-    images: [
-      {
-        url: '/banner.png',
-        width: 1200,
-        height: 630,
-        alt: `${siteMetadata.title} – ${siteMetadata.description}`,
+      googleBot: {
+        index: true,
+        follow: true,
+        'max-video-preview': -1,
+        'max-image-preview': 'large',
+        'max-snippet': -1,
       },
-    ],
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: siteMetadata.title,
-    description: siteMetadata.description,
-    creator: '@yethikrishna_r',
-    site: '@yethikrishna_r',
-    images: ['/banner.png'],
-  },
-  icons: {
-    icon: [
-      { url: '/favicon.png', sizes: '32x32' },
-      { url: '/favicon-light.png', sizes: '32x32', media: '(prefers-color-scheme: dark)' },
-    ],
-    shortcut: '/favicon.png',
-    apple: [{ url: '/logo_black.png', sizes: '180x180' }],
-  },
-  manifest: '/manifest.json',
-  alternates: {
-    canonical: siteMetadata.url,
-  },
-};
+    },
+    openGraph: {
+      type: 'website',
+      title: brand.title,
+      description: brand.description,
+      url: brand.url,
+      siteName: brand.name,
+      locale: 'en_US',
+      images: [
+        {
+          url: '/banner.png',
+          width: 1200,
+          height: 630,
+          alt: `${brand.title} – ${brand.description}`,
+        },
+      ],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: brand.title,
+      description: brand.description,
+      creator: '@yethikrishna_r',
+      site: '@yethikrishna_r',
+      images: ['/banner.png'],
+    },
+    icons: {
+      icon: [
+        { url: '/favicon.png', sizes: '32x32' },
+        { url: '/favicon-light.png', sizes: '32x32', media: '(prefers-color-scheme: dark)' },
+      ],
+      shortcut: '/favicon.png',
+      apple: [{ url: '/logo_black.png', sizes: '180x180' }],
+    },
+    manifest: '/manifest.json',
+    alternates: {
+      canonical: brand.url,
+    },
+  };
+}
 
 export default async function RootLayout({
   children,
@@ -108,6 +115,7 @@ export default async function RootLayout({
   // not baked at build time. Critical for Docker images with runtime env vars.
   await connection();
   const runtimeEnv = getServerPublicEnv();
+  const brand = getBrandForHost((await headers()).get('host'));
 
   return (
     <html lang="en" suppressHydrationWarning className={`${roobert.variable} ${roobertMono.variable}`}>
@@ -190,22 +198,12 @@ export default async function RootLayout({
           }}
         />
 
-        {/* Static SEO meta tags - rendered in initial HTML */}
-        <title>Humble – The Autonomous Company Operating System</title>
-        <meta name="description" content="A cloud computer where AI agents run your company. Connect 3,000+ tools, configure autonomous agents, set triggers — and the machine operates 24/7 with persistent memory." />
-        <meta name="keywords" content="Humble, y0, autonomous company operating system, AI agents, self-driving company, cloud computer, AI automation, agent orchestration, autowork, AI triggers, persistent memory, autonomous workforce, AI operations" />
-        <meta property="og:title" content="Humble – The Autonomous Company Operating System" />
-        <meta property="og:description" content="A cloud computer where AI agents run your company. Connect 3,000+ tools, configure autonomous agents, set triggers — and the machine operates 24/7 with persistent memory." />
-        <meta property="og:image" content="/banner.png" />
-        <meta property="og:url" content="https://humble.yethikrishnar.pw" />
-        <meta property="og:type" content="website" />
-        <meta property="og:site_name" content="Humble" />
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="Humble – The Autonomous Company Operating System" />
-        <meta name="twitter:description" content="A cloud computer where AI agents run your company. Connect 3,000+ tools, configure autonomous agents, set triggers — and the machine operates 24/7 with persistent memory." />
-        <meta name="twitter:image" content="/banner.png" />
-        <meta name="twitter:site" content="@yethikrishna_r" />
-        <link rel="canonical" href="https://humble.yethikrishnar.pw" />
+        {/* SEO meta tags (title, description, og:*, twitter:*, canonical) are
+            supplied by generateMetadata() above via Next's Metadata API —
+            it already renders these into <head> server-side, brand-aware.
+            A hardcoded duplicate used to live here; it always said "Humble"
+            regardless of which brand's hostname served the request, which
+            would have produced conflicting/wrong meta tags on y0's domain. */}
 
         {/* iOS Smart App Banner - shows native install banner in Safari */}
         {!featureFlags.disableMobileAdvertising ? (
@@ -220,14 +218,14 @@ export default async function RootLayout({
             __html: JSON.stringify({
               '@context': 'https://schema.org',
               '@type': 'Organization',
-              name: siteMetadata.name,
-              alternateName: ['Humble', 'Humble AI', 'Humble – The Autonomous Company Operating System'],
-              url: siteMetadata.url,
-              logo: `${siteMetadata.url}/favicon.png`,
-              description: siteMetadata.description,
+              name: brand.name,
+              alternateName: [brand.name, `${brand.name} AI`, brand.title],
+              url: brand.url,
+              logo: `${brand.url}/favicon.png`,
+              description: brand.description,
               foundingDate: '2024',
               sameAs: [
-                'https://github.com/yethikrishna/humble',
+                brand.githubUrl,
                 'https://x.com/yethikrishna_r',
                 'https://www.linkedin.com/in/yethikrishna-r-313530201',
                 'https://founder.myndlabs.tech',
@@ -235,7 +233,7 @@ export default async function RootLayout({
               contactPoint: {
                 '@type': 'ContactPoint',
                 contactType: 'Customer Support',
-                url: siteMetadata.url,
+                url: brand.url,
               },
             }),
           }}
@@ -247,11 +245,11 @@ export default async function RootLayout({
             __html: JSON.stringify({
               '@context': 'https://schema.org',
               '@type': 'SoftwareApplication',
-              name: siteMetadata.title,
-              alternateName: [siteMetadata.name, 'Humble'],
+              name: brand.title,
+              alternateName: [brand.name],
               applicationCategory: 'BusinessApplication',
               operatingSystem: 'Web, macOS, Windows, Linux',
-              description: siteMetadata.description,
+              description: brand.description,
               offers: {
                 '@type': 'Offer',
                 price: '0',
@@ -269,16 +267,18 @@ export default async function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <AuthProvider>
-            <I18nProvider>
-              <ReactQueryProvider>
-                <IntegrationConnectProvider>
-                  {children}
-                </IntegrationConnectProvider>
-                <Toaster />
-              </ReactQueryProvider>
-            </I18nProvider>
-          </AuthProvider>
+          <BrandProvider brand={brand}>
+            <AuthProvider>
+              <I18nProvider>
+                <ReactQueryProvider>
+                  <IntegrationConnectProvider>
+                    {children}
+                  </IntegrationConnectProvider>
+                  <Toaster />
+                </ReactQueryProvider>
+              </I18nProvider>
+            </AuthProvider>
+          </BrandProvider>
           {/* Analytics - lazy loaded to not block FCP */}
           <Suspense fallback={null}>
             <Analytics />
