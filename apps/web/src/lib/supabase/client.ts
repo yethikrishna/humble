@@ -8,10 +8,11 @@ export function createClient() {
   const key = runtimeEnv.SUPABASE_ANON_KEY
 
   if (!url || !key) {
-    if (typeof window !== 'undefined') {
-      throw new Error('Missing Supabase browser environment variables');
-    }
-
+    // No backend configured yet. Fall back to a placeholder client instead
+    // of throwing — every page mounts AuthProvider, which calls this, so
+    // throwing here took down the entire app (client-side "System Fault").
+    // Auth-dependent calls will simply fail against this placeholder host
+    // until real Supabase env vars are set; the public UI keeps rendering.
     return createBrowserClient('https://placeholder.invalid', 'placeholder-anon-key', {
       cookieOptions: {
         name: KORTIX_SUPABASE_AUTH_COOKIE,
