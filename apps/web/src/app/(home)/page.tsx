@@ -10,8 +10,7 @@ import { trackCtaSignup } from '@/lib/analytics/gtm';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { useAuth } from '@/components/AuthProvider';
 import { Reveal } from '@/components/home/reveal';
-
-const INSTALL_CMD = 'git clone https://github.com/yethikrishna/humble';
+import { useBrand } from '@/lib/brands/brand-provider';
 
 /* ─── Google Favicon helper ─── */
 const favicon = (domain: string) =>
@@ -53,6 +52,8 @@ export default function Home() {
   const [copied, setCopied] = useState(false);
   const [showFloatingCta, setShowFloatingCta] = useState(false);
   const { user } = useAuth();
+  const brand = useBrand();
+  const INSTALL_CMD = `git clone ${brand.githubUrl}`;
 
   const { scrollY } = useScroll();
   const drawerRadius = useTransform(scrollY, [200, 600], [24, 0]);
@@ -93,8 +94,17 @@ export default function Home() {
           >
             <div className="flex-1 flex items-center justify-center pt-40 pointer-events-none">
               <h1 className="text-4xl sm:text-5xl md:text-6xl font-medium tracking-tight text-foreground text-center">
-                The Autonomous Company<br />
-                <span className="text-muted-foreground">Operating System</span>
+                {brand.id === 'y0' ? (
+                  <>
+                    Your Autonomous<br />
+                    <span className="text-muted-foreground">AI Workforce</span>
+                  </>
+                ) : (
+                  <>
+                    The Autonomous Company<br />
+                    <span className="text-muted-foreground">Operating System</span>
+                  </>
+                )}
               </h1>
             </div>
             <div className="relative z-[1] pb-8 px-4 flex flex-col items-center gap-6">
@@ -103,7 +113,7 @@ export default function Home() {
                 className="h-12 px-8 text-sm rounded-full transition-colors"
                 onClick={handleLaunch}
               >
-                Launch Your Humble<ArrowRight className="ml-1.5 size-3.5" />
+                Launch Your {brand.name}<ArrowRight className="ml-1.5 size-3.5" />
               </Button>
               <button
                 onClick={handleCopy}
@@ -152,7 +162,7 @@ export default function Home() {
               <div className="relative aspect-video bg-black">
                 <iframe
                   src="https://www.youtube.com/embed/Eu5mYMavctM"
-                  title="Humble launch video"
+                  title={`${brand.name} launch video`}
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                   allowFullScreen
                   className="absolute inset-0 w-full h-full"
@@ -177,7 +187,7 @@ export default function Home() {
           </Reveal>
           <Reveal delay={0.15}>
           <p className="mt-3 text-base sm:text-lg text-muted-foreground leading-relaxed max-w-2xl">
-            A Humble <em>is</em> a company. One shared machine where every agent sees the same filesystem, the same databases, the same history. Context isn&apos;t siloed per tool or per session — it&apos;s shared across the entire system, compounding over time. Coding agents operating inside a full Linux environment are the optimal harness for all knowledge work — not just engineering, but sales, finance, ops, legal, support, and everything in between. We&apos;re building this as our own internal operating system to run our own companies, and open-sourcing the whole thing.
+            A {brand.name} <em>is</em> a company. One shared machine where every agent sees the same filesystem, the same databases, the same history. Context isn&apos;t siloed per tool or per session — it&apos;s shared across the entire system, compounding over time. Coding agents operating inside a full Linux environment are the optimal harness for all knowledge work — not just engineering, but sales, finance, ops, legal, support, and everything in between. We&apos;re building this as our own internal operating system to run our own companies, and open-sourcing the whole thing.
           </p>
           </Reveal>
         </section>
@@ -241,7 +251,7 @@ export default function Home() {
                 <span className="text-sm font-semibold text-foreground">Connect everything</span>
               </div>
               <p className="text-sm text-muted-foreground leading-relaxed mb-4 max-w-xl">
-                Every tool your company uses — OAuth apps, MCP servers, REST APIs, CLI tools, environment variables. If it has an interface, Humble connects to it. 3,000+ integrations available, and custom ones are trivial to add.
+                Every tool your company uses — OAuth apps, MCP servers, REST APIs, CLI tools, environment variables. If it has an interface, {brand.name} connects to it. 3,000+ integrations available, and custom ones are trivial to add.
               </p>
               <div className="flex flex-wrap gap-2">
                 <IntegrationPill domain="gmail.com" name="Gmail" />
@@ -353,7 +363,7 @@ export default function Home() {
             className="px-5 text-xs rounded-full font-medium"
             onClick={handleLaunch}
           >
-            Launch Your Humble<ArrowRight className="ml-1.5 size-3" />
+            Launch Your {brand.name}<ArrowRight className="ml-1.5 size-3" />
           </Button>
         </div>
       </div>
