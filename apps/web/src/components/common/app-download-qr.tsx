@@ -1,6 +1,7 @@
 'use client';
 
 import { cn } from '@/lib/utils';
+import { siteMetadata } from '@/lib/site-metadata';
 
 // Kortix symbol SVG
 function KortixSymbol({ size = 24, className }: { size?: number; className?: string }) {
@@ -20,7 +21,7 @@ function KortixSymbol({ size = 24, className }: { size?: number; className?: str
 /**
  * Universal app download URL - middleware auto-redirects to correct store based on device
  */
-export const APP_DOWNLOAD_URL = 'https://www.kortix.com/app';
+export const APP_DOWNLOAD_URL = `${siteMetadata.url}/app`;
 
 export interface AppDownloadQRProps {
   /** Size of the QR code in pixels */

@@ -12,12 +12,12 @@ export default function EnterprisePage() {
           Coming soon.
         </h1>
         <p className="text-sm text-muted-foreground">
-          Interested in Kortix for your team?{' '}
+          Interested in Humble for your team?{' '}
           <a
-            href="mailto:hey@kortix.ai"
+            href="mailto:yethikrishnarcvn7a@gmail.com"
             className="text-foreground underline underline-offset-4 hover:no-underline"
           >
-            hey@kortix.ai
+            yethikrishnarcvn7a@gmail.com
           </a>
         </p>
         <Button asChild variant="outline" size="sm">

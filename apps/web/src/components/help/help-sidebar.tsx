@@ -41,12 +41,12 @@ const helpData = {
       items: [
         {
           title: "GitHub Repository",
-          url: "https://github.com/kortix-ai/suna",
+          url: "https://github.com/yethikrishna/humble",
           external: true,
         },
         {
-          title: "Discord Community",
-          url: "https://discord.com/invite/RvFhXUdZ9H",
+          title: "Contact",
+          url: "mailto:yethikrishnarcvn7a@gmail.com",
           external: true,
         },
       ],

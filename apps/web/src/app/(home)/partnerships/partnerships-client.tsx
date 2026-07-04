@@ -1,35 +1,12 @@
 'use client';
 
-import { cn } from '@/lib/utils';
-import { useState, useEffect, useCallback } from 'react';
 import { ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
-import Cal, { getCalApi } from '@calcom/embed-react';
 import { Reveal } from '@/components/home/reveal';
 
-const CAL_LINK = 'markokraemer/partnerships';
-const CAL_NAMESPACE = 'partnerships';
+const CONTACT_EMAIL = 'yethikrishnarcvn7a@gmail.com';
 
 export default function PartnershipsPageClient() {
-  const [calOpen, setCalOpen] = useState(false);
-  const [showFloatingCta, setShowFloatingCta] = useState(false);
-
-  useEffect(() => {
-    (async function () {
-      const cal = await getCalApi({ namespace: CAL_NAMESPACE });
-      cal('ui', { hideEventTypeDetails: true, layout: 'month_view' });
-    })();
-  }, []);
-
-  useEffect(() => {
-    const onScroll = () => setShowFloatingCta(window.scrollY > 400);
-    window.addEventListener('scroll', onScroll, { passive: true });
-    return () => window.removeEventListener('scroll', onScroll);
-  }, []);
-
-  const openCal = useCallback(() => setCalOpen(true), []);
-
   return (
     <main className="min-h-screen bg-background">
       <div className="max-w-3xl mx-auto px-6 pt-24 sm:pt-32 pb-24 sm:pb-32">
@@ -43,7 +20,7 @@ export default function PartnershipsPageClient() {
 
         <Reveal delay={0.08}>
           <p className="text-base text-muted-foreground leading-relaxed max-w-xl">
-            We work with a handful of selected companies to build autonomous operations — the same way we build them for ourselves. Kortix leadership and engineers, embedded with your team.
+            We work with a handful of selected companies to build autonomous operations — the same way we build them for ourselves. Humble leadership and engineers, embedded with your team.
           </p>
         </Reveal>
 
@@ -63,7 +40,7 @@ export default function PartnershipsPageClient() {
               $20,000<span className="text-base font-normal text-muted-foreground">/month</span>
             </p>
             <p className="text-sm text-muted-foreground mt-2">
-              Kortix leadership and engineers embedded with your team. Cancel anytime.
+              Humble leadership and engineers embedded with your team. Cancel anytime.
             </p>
           </div>
         </Reveal>
@@ -86,7 +63,7 @@ export default function PartnershipsPageClient() {
                 <p className="text-xs text-muted-foreground mb-1">Phase 2</p>
                 <p className="text-base font-medium text-foreground">Build & Deploy</p>
                 <p className="text-base text-muted-foreground leading-relaxed mt-1.5">
-                  We build autonomous operations on Kortix — agents, automations, autonomous teams — wired into your tools and data. Fully deployed, in production. This requires low politics, low bureaucracy, and real access. Credentials, systems, green lights. We need ownership to move. This is a partnership, not a consulting engagement.
+                  We build autonomous operations on Humble — agents, automations, autonomous teams — wired into your tools and data. Fully deployed, in production. This requires low politics, low bureaucracy, and real access. Credentials, systems, green lights. We need ownership to move. This is a partnership, not a consulting engagement.
                 </p>
               </div>
               <div>
@@ -110,33 +87,35 @@ export default function PartnershipsPageClient() {
             <Button
               size="lg"
               className="h-11 px-6 mt-5 text-sm rounded-full"
-              onClick={openCal}
+              asChild
             >
-              Schedule a call<ArrowRight className="ml-1.5 size-3.5" />
+              <a href={`mailto:${CONTACT_EMAIL}`}>
+                Get in touch<ArrowRight className="ml-1.5 size-3.5" />
+              </a>
             </Button>
 
             <div className="flex flex-col gap-1.5 mt-5">
               <a
-                href="mailto:marko@kortix.com"
+                href={`mailto:${CONTACT_EMAIL}`}
                 className="text-base text-foreground hover:text-foreground underline underline-offset-4 decoration-foreground/20 hover:decoration-foreground/50 transition-colors w-fit"
               >
-                marko@kortix.com
+                {CONTACT_EMAIL}
               </a>
               <a
-                href="https://x.com/markokraemer"
+                href="https://x.com/yethikrishna_r"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-base text-foreground hover:text-foreground underline underline-offset-4 decoration-foreground/20 hover:decoration-foreground/50 transition-colors w-fit"
               >
-                @markokraemer
+                @yethikrishna_r
               </a>
               <a
-                href="https://www.linkedin.com/in/markokraemer/"
+                href="https://www.linkedin.com/in/yethikrishna-r-313530201"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-base text-foreground hover:text-foreground underline underline-offset-4 decoration-foreground/20 hover:decoration-foreground/50 transition-colors w-fit"
               >
-                linkedin.com/in/markokraemer
+                linkedin.com/in/yethikrishna-r-313530201
               </a>
             </div>
           </div>
@@ -145,42 +124,6 @@ export default function PartnershipsPageClient() {
         {/* Bottom spacing for floating CTA clearance */}
         <div className="h-20" />
       </div>
-
-      {/* Floating CTA Bar — commented out for now
-      <div
-        className={cn('fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-1.5 px-1.5 py-1.5 rounded-full border border-border bg-background/95 backdrop-blur-md transition-colors duration-300', 
-          showFloatingCta ? 'translate-y-0 opacity-100' : 'translate-y-20 opacity-0 pointer-events-none'
-        )}
-      >
-        <Button
-          size="sm"
-          className="px-5 text-xs rounded-full font-medium"
-          onClick={openCal}
-        >
-          Schedule a call<ArrowRight className="ml-1.5 size-3" />
-        </Button>
-      </div>
-      */}
-
-      {/* ═══ Cal.com Modal ═══ */}
-      <Dialog open={calOpen} onOpenChange={setCalOpen}>
-        <DialogContent className="p-0 gap-0 border-none max-w-[min(700px,95vw)] rounded-xl overflow-hidden">
-          <DialogTitle className="sr-only">
-            Schedule a Partnerships Call
-          </DialogTitle>
-          <div className="bg-white dark:bg-[#171717] h-[600px] sm:h-[700px] overflow-auto">
-            <Cal
-              namespace={CAL_NAMESPACE}
-              calLink={CAL_LINK}
-              style={{ width: '100%', height: '100%' }}
-              config={{
-                layout: 'month_view',
-                hideEventTypeDetails: 'false',
-              }}
-            />
-          </div>
-        </DialogContent>
-      </Dialog>
     </main>
   );
 }

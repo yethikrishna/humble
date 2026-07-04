@@ -27,6 +27,7 @@ export const siteConfig = {
         // { id: 3, title: 'Partnerships', url: '/partnerships' },
         { id: 4, title: 'Support', url: '/support' },
         { id: 5, title: 'y0 Platform', url: Y0_APP_URL },
+        { id: 13, title: 'Contact', url: 'mailto:yethikrishnarcvn7a@gmail.com' },
       ],
     },
     {
@@ -34,7 +35,7 @@ export const siteConfig = {
       links: [
         { id: 6, title: 'Tutorials', url: '/tutorials' },
         { id: 7, title: 'Documentation', url: '/docs' },
-        { id: 8, title: 'Discord', url: 'https://discord.com/invite/RvFhXUdZ9H' },
+        { id: 8, title: 'X', url: 'https://x.com/yethikrishna_r' },
         { id: 9, title: 'GitHub', url: 'https://github.com/yethikrishna/humble' },
       ],
     },

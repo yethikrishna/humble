@@ -205,14 +205,14 @@ export default function GlobalError({
           >
             If this persists, contact{' '}
             <a
-              href="mailto:support@kortix.ai"
+              href="mailto:yethikrishnarcvn7a@gmail.com"
               style={{
                 color: 'rgba(255,255,255,0.5)',
                 textDecoration: 'underline',
                 textDecorationColor: 'rgba(255,255,255,0.2)',
               }}
             >
-              support@kortix.ai
+              yethikrishnarcvn7a@gmail.com
             </a>
           </div>
 

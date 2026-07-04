@@ -221,55 +221,65 @@ export async function middleware(request: NextRequest) {
   // used for server-side auth calls. SUPABASE_URL / NEXT_PUBLIC_SUPABASE_URL is the
   // public-facing URL that the browser uses. The middleware runs server-side inside
   // the Docker container, so it needs the internal URL to reach Supabase.
-  const supabaseUrl = process.env.SUPABASE_SERVER_URL || process.env.SUPABASE_URL || process.env.KORTIX_PUBLIC_SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL!;
-  const supabaseAnonKey = process.env.SUPABASE_ANON_KEY || process.env.KORTIX_PUBLIC_SUPABASE_ANON_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
-  const supabase = createServerClient(
-    supabaseUrl,
-    supabaseAnonKey,
-    {
-      cookieOptions: {
-        name: KORTIX_SUPABASE_AUTH_COOKIE,
-        path: '/',
-        sameSite: 'lax',
-      },
-      cookies: {
-        getAll() {
-          return request.cookies.getAll();
-        },
-        setAll(cookiesToSet) {
-          cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value));
-          supabaseResponse = NextResponse.next({
-            request,
-          });
-          cookiesToSet.forEach(({ name, value, options }) =>
-            supabaseResponse.cookies.set(name, value, options)
-          );
-        },
-      },
-    }
-  );
+  const supabaseUrl = process.env.SUPABASE_SERVER_URL || process.env.SUPABASE_URL || process.env.KORTIX_PUBLIC_SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseAnonKey = process.env.SUPABASE_ANON_KEY || process.env.KORTIX_PUBLIC_SUPABASE_ANON_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
-  // Fetch user ONCE and reuse for both locale detection and auth checks.
-  // IMPORTANT: Skip getUser() for auth routes — the auth page handles its
-  // own session client-side. Calling getUser() here can trigger a server-side
-  // token refresh that consumes the refresh token (GoTrue refresh tokens are
-  // single-use). The updated cookie is set on the response, but if the browser
-  // does a client-side navigation (router.push) instead of a full page load,
-  // the Set-Cookie header may not be processed, leaving the browser with a
-  // stale (revoked) refresh token → "Refresh Token Not Found" on the next request.
+  // If Supabase isn't configured yet (e.g. env vars not set on the host), don't
+  // crash the entire site. `createServerClient` throws on empty URL/key, which
+  // would fail middleware for EVERY route — including public marketing pages.
+  // Instead, treat the request as unauthenticated and let public routes render;
+  // routes that require auth fall through to the normal logged-out handling.
+  const isSupabaseConfigured = Boolean(supabaseUrl && supabaseAnonKey);
+
   let user: { id: string; user_metadata?: { locale?: string } } | null = null;
   let authError: Error | null = null;
-  
+
   const isAuthRoute = pathname === '/auth' || pathname.startsWith('/auth/');
-  
-  if (!isAuthRoute) {
-    try {
-      const { data: { user: fetchedUser }, error: fetchedError } = await supabase.auth.getUser();
-      user = fetchedUser;
-      authError = fetchedError as Error | null;
-    } catch (error) {
-      // User might not be authenticated, continue
-      authError = error as Error;
+
+  if (isSupabaseConfigured) {
+    const supabase = createServerClient(
+      supabaseUrl!,
+      supabaseAnonKey!,
+      {
+        cookieOptions: {
+          name: KORTIX_SUPABASE_AUTH_COOKIE,
+          path: '/',
+          sameSite: 'lax',
+        },
+        cookies: {
+          getAll() {
+            return request.cookies.getAll();
+          },
+          setAll(cookiesToSet) {
+            cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value));
+            supabaseResponse = NextResponse.next({
+              request,
+            });
+            cookiesToSet.forEach(({ name, value, options }) =>
+              supabaseResponse.cookies.set(name, value, options)
+            );
+          },
+        },
+      }
+    );
+
+    // Fetch user ONCE and reuse for both locale detection and auth checks.
+    // IMPORTANT: Skip getUser() for auth routes — the auth page handles its
+    // own session client-side. Calling getUser() here can trigger a server-side
+    // token refresh that consumes the refresh token (GoTrue refresh tokens are
+    // single-use). The updated cookie is set on the response, but if the browser
+    // does a client-side navigation (router.push) instead of a full page load,
+    // the Set-Cookie header may not be processed, leaving the browser with a
+    // stale (revoked) refresh token → "Refresh Token Not Found" on the next request.
+    if (!isAuthRoute) {
+      try {
+        const { data: { user: fetchedUser }, error: fetchedError } = await supabase.auth.getUser();
+        user = fetchedUser;
+        authError = fetchedError as Error | null;
+      } catch (error) {
+        // User might not be authenticated, continue
+        authError = error as Error;
+      }
     }
   }
 
