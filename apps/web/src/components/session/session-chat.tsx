@@ -3482,7 +3482,7 @@ function SessionTurn({
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src="/kortix-logomark-white.svg"
-            alt="Kortix"
+            alt="Humble"
             className="dark:invert-0 invert flex-shrink-0 h-[14px] w-auto"
           />
         </div>
@@ -3750,7 +3750,7 @@ function SessionTurn({
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src="/kortix-logomark-white.svg"
-              alt="Kortix"
+              alt="Humble"
               className="dark:invert-0 invert flex-shrink-0 h-[14px] w-auto"
             />
           </div>
@@ -6155,7 +6155,7 @@ export function SessionChat({
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img
                         src="/kortix-logomark-white.svg"
-                        alt="Kortix"
+                        alt="Humble"
                         className="dark:invert-0 invert flex-shrink-0 h-[14px] w-auto"
                       />
                       {isRetrying && (
@@ -6183,7 +6183,7 @@ export function SessionChat({
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img
                         src="/kortix-logomark-white.svg"
-                        alt="Kortix"
+                        alt="Humble"
                         className="dark:invert-0 invert flex-shrink-0 h-[14px] w-auto"
                       />
                       <div className="text-sm text-muted-foreground">
@@ -6262,7 +6262,7 @@ export function SessionChat({
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       src="/kortix-logomark-white.svg"
-                      alt="Kortix"
+                      alt="Humble"
                       className="dark:invert-0 invert flex-shrink-0 h-[14px] w-auto"
                     />
                   </div>
